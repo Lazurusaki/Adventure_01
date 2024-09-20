@@ -1,18 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraRotator : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private float _mouseSensetivity;
+    [SerializeField] private Transform _target;
+    
+    private InputDetector _inputDetector;
+
+    public void SetInputDetector(InputDetector inputDetector)
     {
-        
+        _inputDetector = inputDetector;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        //Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    private void Update()
+    {
+        float RotationX = -_inputDetector.MouseAxisInput.y * _mouseSensetivity;
+        float RotationY = _inputDetector.MouseAxisInput.x * _mouseSensetivity;
+        transform.Rotate(RotationX , RotationY, 0f);
     }
 }

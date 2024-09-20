@@ -4,6 +4,7 @@ public class BallGame : MonoBehaviour
 { 
     [SerializeField] private Transform _ballStart;
     [SerializeField] private BallController _ballController;
+    [SerializeField] private CameraRotator _cameraRotator;
     [SerializeField] private float _roundTimeSeconds = 60;
     [SerializeField] private Transform _coinsContainer;
 
@@ -15,6 +16,7 @@ public class BallGame : MonoBehaviour
     {
         _inputDetector = new InputDetector();
         _ballController.SetInputDetector(_inputDetector);
+        _cameraRotator.SetInputDetector(_inputDetector);
     }
     
     private void Start()
