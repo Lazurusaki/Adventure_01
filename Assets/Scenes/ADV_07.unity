@@ -2047,7 +2047,7 @@ MonoBehaviour:
   _ballStart: {fileID: 912505137}
   _ballController: {fileID: 347589039}
   _cameraRotator: {fileID: 603609627}
-  _roundTimeSeconds: 30
+  _roundTimeSeconds: 60
   _coinsContainer: {fileID: 1597466282}
 --- !u!1 &830616315
 GameObject:
