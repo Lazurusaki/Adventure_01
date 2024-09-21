@@ -5,19 +5,20 @@ public class BallController : MonoBehaviour
     [SerializeField] private float _rollPower;
     [SerializeField] private float _maxAngularVelocity;
     [SerializeField] private float _JumpPower;
+    [SerializeField] private float _RotateSpeed;
 
     private InputDetector _inputDetector;
     private Vector2 _currentAxisInput;
     private Rigidbody _rigidBody;
-    private float _axisInputDeadZone = 0.01f;  
     private bool _isGrounded;
     private bool _isJumping = false;
-    private float _groundedDeadZone = 0.02f;
+    private float _axisInputDeadZone = 0.01f; 
     private float _maxGroundAngle = 45f;
+    private float _RotationY;
 
     private void Awake()
     {
-        _rigidBody =GetComponent<Rigidbody>();
+        _rigidBody = GetComponent<Rigidbody>();
     }
 
     private void Start()
@@ -26,7 +27,7 @@ public class BallController : MonoBehaviour
     }
 
     private void Update()
-    {  
+    {
         if (_inputDetector != null)
         {
             _currentAxisInput = _inputDetector.AxisInput.magnitude > _axisInputDeadZone ? _inputDetector.AxisInput : Vector2.zero;
@@ -35,7 +36,7 @@ public class BallController : MonoBehaviour
             {
                 _isJumping = true;
             }
-        }        
+        }
     }
 
     private void FixedUpdate()
@@ -47,14 +48,14 @@ public class BallController : MonoBehaviour
         }
 
         if (_isJumping)
-        {   
+        {
             Jump();
             _isJumping = false;
         }
     }
-    
+
     private void Jump()
-    {      
+    {
         _rigidBody.AddForce(Vector3.up * _JumpPower, ForceMode.VelocityChange);
     }
 
@@ -84,13 +85,18 @@ public class BallController : MonoBehaviour
 
     private void Roll()
     {
-        Vector3 torque = new Vector3(_currentAxisInput.y, 0, -_currentAxisInput.x) * _rollPower;
+        Vector3 torque = Quaternion.Euler(Vector3.up * _RotationY) * (new Vector3(_currentAxisInput.y, 0, -_currentAxisInput.x) * _rollPower);
         _rigidBody.AddTorque(torque, ForceMode.Acceleration);
     }
 
     public void SetInputDetector(InputDetector inputDetector)
-    { 
-        _inputDetector = inputDetector; 
+    {
+        _inputDetector = inputDetector;
+    }
+
+    public void SetRotationY(float rotationY)
+    {
+        _RotationY = rotationY;
     }
 
     public void Freeze()
@@ -101,6 +107,6 @@ public class BallController : MonoBehaviour
     public void Unfreeze()
     {
         _rigidBody.isKinematic = false;
-    }    
+    }
 }
 

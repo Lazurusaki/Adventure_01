@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class BallGame : MonoBehaviour
-{ 
+{
     [SerializeField] private Transform _ballStart;
     [SerializeField] private BallController _ballController;
     [SerializeField] private CameraRotator _cameraRotator;
@@ -18,7 +18,7 @@ public class BallGame : MonoBehaviour
         _ballController.SetInputDetector(_inputDetector);
         _cameraRotator.SetInputDetector(_inputDetector);
     }
-    
+
     private void Start()
     {
         NewGame();
@@ -32,7 +32,7 @@ public class BallGame : MonoBehaviour
         {
             _timer -= Time.deltaTime;
             DisplayTimer();
-       
+
             if (TryEndGame(out bool isWin))
             {
                 if (isWin)
@@ -54,6 +54,11 @@ public class BallGame : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        _ballController.SetRotationY(_cameraRotator.GetCamraRotationY());
+    }
+
     private bool CheckAllCoinsCollected()
     {
         foreach (Transform child in _coinsContainer)
@@ -67,7 +72,7 @@ public class BallGame : MonoBehaviour
 
     private void NewGame()
     {
-        _timer = _roundTimeSeconds;   
+        _timer = _roundTimeSeconds;
         _ballController.transform.position = _ballStart.position;
         ResetCoins();
         _isRunning = true;
@@ -106,6 +111,13 @@ public class BallGame : MonoBehaviour
         Debug.Log("You Win!");
     }
 
+    private void ResetCoins()
+    {
+        foreach (Transform child in _coinsContainer)
+        {
+            child.gameObject.SetActive(true);
+        }
+    }
     private bool TryEndGame(out bool isWin)
     {
         isWin = false;
@@ -122,13 +134,5 @@ public class BallGame : MonoBehaviour
         }
 
         return false;
-    }
-
-    private void ResetCoins()
-    {
-        foreach (Transform child in _coinsContainer)
-        {
-            child.gameObject.SetActive(true);
-        }
-    }
+    }   
 }

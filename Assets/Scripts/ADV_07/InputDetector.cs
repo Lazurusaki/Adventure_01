@@ -16,7 +16,7 @@ public class InputDetector
     public bool IsJumping { get; private set; } = false;
 
     public void Update()
-    {    
+    {
         AxisInput = new Vector2(Input.GetAxisRaw(HorizontalAxisName), Input.GetAxisRaw(VerticalAxisName)).normalized;
         MouseAxisInput = new Vector2(Input.GetAxisRaw(HorizontalMouseAxisName), Input.GetAxisRaw(VerticalMouseAxisName));
 
@@ -28,7 +28,7 @@ public class InputDetector
         if (Input.GetKeyDown(RestartButton))
             IsRestarting = true;
         else
-            IsRestarting = false;       
+            IsRestarting = false;
     }
 
     public KeyCode GetRestartKey()
