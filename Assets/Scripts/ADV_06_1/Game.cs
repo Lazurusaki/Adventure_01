@@ -7,7 +7,7 @@ public class Game : MonoBehaviour
 
     [SerializeField] private Transform _playerDefaultTransform;
     [SerializeField] private Transform _enemyDefaultTransform;
-    [SerializeField] private BallController _ballController;
+    //[SerializeField] private BallController _ballController;
     [SerializeField] private Enemy _enemy;
     [SerializeField] private float _timeToWinSeconds;
     [SerializeField] private float _timerRunDistance;

@@ -3,12 +3,12 @@ using UnityEngine;
 public class CameraRotator : MonoBehaviour
 {
     [SerializeField] private float _mouseSensetivity;
-    [SerializeField] private float minYAngle = -20;
-    [SerializeField] private float maxYAngle = 90;
+    [SerializeField] private float _minYAngle = -20;
+    [SerializeField] private float _maxYAngle = 90;
 
     private InputDetector _inputDetector;
-    private float rotationX;
-    private float rotationY;
+    private float _rotationX;
+    private float _rotationY;
 
     public void SetInputDetector(InputDetector inputDetector)
     {
@@ -22,10 +22,17 @@ public class CameraRotator : MonoBehaviour
 
     private void LateUpdate()
     {
-        rotationX -= _inputDetector.MouseAxisInput.y * _mouseSensetivity;
-        rotationY += _inputDetector.MouseAxisInput.x * _mouseSensetivity;
-        rotationX = Mathf.Clamp(rotationX, minYAngle, maxYAngle);
-        transform.localEulerAngles = new Vector3(rotationX, rotationY, 0);
+        if (_inputDetector != null)
+        {
+            _rotationX -= _inputDetector.MouseAxisInput.y * _mouseSensetivity;
+            _rotationY += _inputDetector.MouseAxisInput.x * _mouseSensetivity;
+            _rotationX = Mathf.Clamp(_rotationX, _minYAngle, _maxYAngle);
+            transform.localEulerAngles = new Vector3(_rotationX, _rotationY, 0);
+        }
+        else
+        {
+            Debug.Log("InputDetector is not assigned");
+        }
     }
 
     public float GetCamraRotationY()

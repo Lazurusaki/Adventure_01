@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Mover : MonoBehaviour
+public class MoverOld : MonoBehaviour
 {
     private const string AnimatorIsMovingName = "isMooving";
 

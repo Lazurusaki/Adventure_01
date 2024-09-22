@@ -3,25 +3,37 @@ using UnityEngine;
 public class BallGame : MonoBehaviour
 {
     [SerializeField] private Transform _ballStart;
-    [SerializeField] private BallController _ballController;
+    [SerializeField] private PlayerController _playerController;
     [SerializeField] private CameraRotator _cameraRotator;
     [SerializeField] private float _roundTimeSeconds = 60;
     [SerializeField] private Transform _coinsContainer;
 
     private InputDetector _inputDetector;
+    private CoinCollector _coinCollector;
     private float _timer;
+    private int _coinsCount;
     private bool _isRunning = false;
 
     private void Awake()
     {
         _inputDetector = new InputDetector();
-        _ballController.SetInputDetector(_inputDetector);
-        _cameraRotator.SetInputDetector(_inputDetector);
+
+        if (_playerController != null)
+        {
+            _playerController.transform.TryGetComponent(out _coinCollector);
+            _playerController.SetInputDetector(_inputDetector);
+            _cameraRotator.SetInputDetector(_inputDetector);
+        }
+        else
+        {
+            Debug.Log("PlayerController has not assigned");
+        }
     }
 
     private void Start()
     {
-        NewGame();
+        SetCoinsCount();
+        StartNewGame();
     }
 
     private void Update()
@@ -50,40 +62,35 @@ public class BallGame : MonoBehaviour
         }
         else if (_inputDetector.IsRestarting)
         {
-            NewGame();
+            StartNewGame();
         }
     }
 
     private void LateUpdate()
     {
-        _ballController.SetRotationY(_cameraRotator.GetCamraRotationY());
+        _playerController.SetAxisDirection(_cameraRotator.GetCamraRotationY());
     }
 
     private bool CheckAllCoinsCollected()
     {
-        foreach (Transform child in _coinsContainer)
-        {
-            if (child.gameObject.activeSelf)
-                return false;
-        }
-
-        return true;
+        return _coinCollector.Coins >= _coinsCount;
     }
 
-    private void NewGame()
+    private void StartNewGame()
     {
         _timer = _roundTimeSeconds;
-        _ballController.transform.position = _ballStart.position;
-        ResetCoins();
+        _playerController.transform.position = _ballStart.position;
+        EnableCoins();
+        _coinCollector.Empty();
         _isRunning = true;
-        _ballController.Unfreeze();
+        _playerController.Enable();
         DisplayObjectiveMessage();
     }
 
     private void PauseGame()
     {
         _isRunning = false;
-        _ballController.Freeze();
+        _playerController.Disable();
     }
 
     private void DisplayLooseMessage()
@@ -111,13 +118,20 @@ public class BallGame : MonoBehaviour
         Debug.Log("You Win!");
     }
 
-    private void ResetCoins()
+    private void EnableCoins()
     {
         foreach (Transform child in _coinsContainer)
         {
             child.gameObject.SetActive(true);
         }
     }
+
+    private void SetCoinsCount()
+    {
+        foreach (Transform child in _coinsContainer)
+            _coinsCount++;
+    }
+
     private bool TryEndGame(out bool isWin)
     {
         isWin = false;
@@ -134,5 +148,5 @@ public class BallGame : MonoBehaviour
         }
 
         return false;
-    }   
+    }
 }
