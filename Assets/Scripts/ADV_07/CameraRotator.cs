@@ -1,42 +1,45 @@
 using UnityEngine;
 
-public class CameraRotator : MonoBehaviour
+namespace ADV_07
 {
-    [SerializeField] private float _mouseSensetivity;
-    [SerializeField] private float _minYAngle = -20;
-    [SerializeField] private float _maxYAngle = 90;
-
-    private InputDetector _inputDetector;
-    private float _rotationX;
-    private float _rotationY;
-
-    public void SetInputDetector(InputDetector inputDetector)
+    public class CameraRotator : MonoBehaviour
     {
-        _inputDetector = inputDetector;
-    }
+        [SerializeField] private float _mouseSensetivity;
+        [SerializeField] private float _minYAngle = -20;
+        [SerializeField] private float _maxYAngle = 90;
 
-    private void Start()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-    }
+        private InputDetector _inputDetector;
+        private float _rotationX;
+        private float _rotationY;
 
-    private void LateUpdate()
-    {
-        if (_inputDetector != null)
+        public void SetInputDetector(InputDetector inputDetector)
         {
-            _rotationX -= _inputDetector.MouseAxisInput.y * _mouseSensetivity;
-            _rotationY += _inputDetector.MouseAxisInput.x * _mouseSensetivity;
-            _rotationX = Mathf.Clamp(_rotationX, _minYAngle, _maxYAngle);
-            transform.localEulerAngles = new Vector3(_rotationX, _rotationY, 0);
+            _inputDetector = inputDetector;
         }
-        else
-        {
-            Debug.Log("InputDetector is not assigned");
-        }
-    }
 
-    public float GetCamraRotationY()
-    {
-        return transform.rotation.eulerAngles.y;
+        private void Start()
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        private void LateUpdate()
+        {
+            if (_inputDetector != null)
+            {
+                _rotationX -= _inputDetector.MouseAxisInput.y * _mouseSensetivity;
+                _rotationY += _inputDetector.MouseAxisInput.x * _mouseSensetivity;
+                _rotationX = Mathf.Clamp(_rotationX, _minYAngle, _maxYAngle);
+                transform.localEulerAngles = new Vector3(_rotationX, _rotationY, 0);
+            }
+            else
+            {
+                Debug.Log("InputDetector is not assigned");
+            }
+        }
+
+        public float GetCamraRotationY()
+        {
+            return transform.rotation.eulerAngles.y;
+        }
     }
 }

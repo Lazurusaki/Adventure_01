@@ -1,4 +1,5 @@
 using UnityEngine;
+using ADV_07;
 
 [RequireComponent (typeof(PlatformRotator))]
 public class LabyrynthGame : MonoBehaviour

@@ -1,86 +1,90 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Roller))]
-[RequireComponent(typeof(Jumper))]
-public class CharacterController : MonoBehaviour
+namespace ADV_07
 {
-    private Roller _roller;
-    private Jumper _jumper;
-    private Rigidbody _rigidBody;
+    [RequireComponent(typeof(Roller))]
+    [RequireComponent(typeof(Jumper))]
 
-    private float _maxGroundAngle = 45f;
-    private bool _isGrounded;
-    private bool _isJumping = false;
-    private Vector3 _moveDirection;
-
-    private void Awake()
+    public class CharacterController : MonoBehaviour
     {
-        _rigidBody = GetComponent<Rigidbody>();
-        _roller = GetComponent<Roller>();
-        _jumper = GetComponent<Jumper>();
-    }
+        private Roller _roller;
+        private Jumper _jumper;
+        private Rigidbody _rigidBody;
 
-    private void FixedUpdate()
-    {
-        if (_moveDirection != Vector3.zero)
+        private float _maxGroundAngle = 45f;
+        private bool _isGrounded;
+        private bool _isJumping = false;
+        private Vector3 _moveDirection;
+
+        private void Awake()
         {
-            _roller.Roll(_moveDirection);
-            _moveDirection = Vector3.zero;
+            _rigidBody = GetComponent<Rigidbody>();
+            _roller = GetComponent<Roller>();
+            _jumper = GetComponent<Jumper>();
         }
 
-        if (_isJumping)
+        private void FixedUpdate()
         {
-            _jumper.Jump();
-            _isJumping = false;
-        }
-    }
-
-    private bool IsContainsGroundComponent(Transform transform)
-    {
-        return transform.TryGetComponent<Ground>(out _);
-    }
-
-    private void OnCollisionStay(Collision collision)
-    {
-        if (IsContainsGroundComponent(collision.transform))
-        {
-            foreach (ContactPoint contact in collision.contacts)
+            if (_moveDirection != Vector3.zero)
             {
-                float angle = Vector3.Angle(contact.normal, Vector3.up);
+                _roller.Roll(_moveDirection);
+                _moveDirection = Vector3.zero;
+            }
 
-                if (angle <= _maxGroundAngle)
+            if (_isJumping)
+            {
+                _jumper.Jump();
+                _isJumping = false;
+            }
+        }
+
+        private bool IsContainsGroundComponent(Transform transform)
+        {
+            return transform.TryGetComponent<Ground>(out _);
+        }
+
+        private void OnCollisionStay(Collision collision)
+        {
+            if (IsContainsGroundComponent(collision.transform))
+            {
+                foreach (ContactPoint contact in collision.contacts)
                 {
-                    _isGrounded = true;
+                    float angle = Vector3.Angle(contact.normal, Vector3.up);
+
+                    if (angle <= _maxGroundAngle)
+                    {
+                        _isGrounded = true;
+                    }
                 }
             }
         }
-    }
 
-    private void OnCollisionExit(Collision collision)
-    {
-        if (IsContainsGroundComponent(collision.transform))
+        private void OnCollisionExit(Collision collision)
         {
-            _isGrounded = false;
+            if (IsContainsGroundComponent(collision.transform))
+            {
+                _isGrounded = false;
+            }
         }
-    }
 
-    public void Jump()
-    {
-        if (_isGrounded)
-            _isJumping = true;
-    }
-    public void Roll(Vector3 direction)
-    {
-        _moveDirection = direction;
-    }
+        public void Jump()
+        {
+            if (_isGrounded)
+                _isJumping = true;
+        }
+        public void Roll(Vector3 direction)
+        {
+            _moveDirection = direction;
+        }
 
-    public void Freeze()
-    {
-        _rigidBody.isKinematic = true;
-    }
+        public void Freeze()
+        {
+            _rigidBody.isKinematic = true;
+        }
 
-    public void Unfreeze()
-    {
-        _rigidBody.isKinematic = false;
+        public void Unfreeze()
+        {
+            _rigidBody.isKinematic = false;
+        }
     }
 }

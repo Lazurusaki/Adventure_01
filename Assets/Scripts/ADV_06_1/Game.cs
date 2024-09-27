@@ -81,13 +81,13 @@ public class Game : MonoBehaviour
     private void NewGame()
     {
         //_player.transform.position = _playerDefaultTransform.position;
-        _enemy.transform.position = _enemyDefaultTransform.position;
-        IsTimerRunning = false;
-        ResetTimer();
-        _isRunning = true;
-        _enemy.IsWorking = true;
+        //_enemy.transform.position = _enemyDefaultTransform.position;
+        //IsTimerRunning = false;
+        //ResetTimer();
+        //_isRunning = true;
+        //_enemy.IsWorking = true;
        //_player.IsInputEnabled = true;
-        DisplayObjectiveMessage();
+       //DisplayObjectiveMessage();
     }
 
     private void PauseGame()
