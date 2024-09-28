@@ -7,6 +7,7 @@ namespace ADV_08
     public class CharacterController : MonoBehaviour
     {
         [SerializeField] private float _rotationSpeed;
+        public bool IsMoving { get; private set; }
 
         private Mover _mover;
         private CharacterAnimationController _characterAnimationController;
@@ -30,6 +31,7 @@ namespace ADV_08
         {
             LookToMoving(moveDirection);
             _mover.Move(moveDirection);
+            IsMoving = true;
 
             if (_characterAnimationController != null)
                 _characterAnimationController.SetMoving(true);
@@ -37,6 +39,8 @@ namespace ADV_08
 
         public void MoveEnd()
         {
+            IsMoving = false;
+
             if (_characterAnimationController != null)
                 _characterAnimationController.SetMoving(false);
         }
