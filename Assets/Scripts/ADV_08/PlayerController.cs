@@ -3,7 +3,6 @@ using UnityEngine;
 namespace ADV_08
 {
     [RequireComponent(typeof(CharacterController))]
-    [RequireComponent(typeof(CharacterAnimationController))]
     [RequireComponent(typeof(Inventory))]
     public class PlayerController : MonoBehaviour
     {
@@ -12,13 +11,11 @@ namespace ADV_08
         private CharacterAnimationController _characterAnimationController;
         private Inventory _inventory;
 
-        private float _axisInputDeadZone = 0.01f;
         private Vector3 _axisDirection;
 
         private void Awake()
         {
             _characterController = GetComponent<CharacterController>();
-            _characterAnimationController = GetComponent<CharacterAnimationController>();
             _inventory = GetComponent<Inventory>();
         }
 
@@ -30,17 +27,18 @@ namespace ADV_08
                 return;
             }
 
-            _characterAnimationController.SetMoving(isAxisActive());
-
-            if (isAxisActive())
+            if (_inputDetector.AxisInput.magnitude > 0)
             {
-                Move();
+                _axisDirection = new Vector3(_inputDetector.AxisInput.x, 0, _inputDetector.AxisInput.y);
+                _characterController.MoveStart(_axisDirection);
+            }
+            else
+            {
+                _characterController.MoveEnd();
             }
 
             if (_inputDetector.IsUsingAbility)
-            {
                 ActivateItem();
-            }
         }
 
         private void ActivateItem()
@@ -54,17 +52,6 @@ namespace ADV_08
             {
                 Debug.Log("Inventory is Empty");
             }
-        }
-
-        private bool isAxisActive()
-        {
-            return _inputDetector.AxisInput.magnitude > _axisInputDeadZone;
-        }
-
-        private void Move()
-        {
-            _axisDirection = new Vector3(_inputDetector.AxisInput.x, 0, _inputDetector.AxisInput.y);
-            _characterController.Move(_axisDirection);
         }
 
         public void SetInputDetector(InputDetector inputDetector)

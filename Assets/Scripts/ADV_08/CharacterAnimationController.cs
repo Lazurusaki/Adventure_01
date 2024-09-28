@@ -3,9 +3,10 @@ using UnityEngine;
 namespace ADV_08
 {
     [RequireComponent(typeof(Animator))]
+
     public class CharacterAnimationController : MonoBehaviour
     {
-        private const string AnimatorIsMovingName = "IsMoving";
+        private const string IsMovingName = "IsMoving";
 
         private Animator _animator;
 
@@ -14,9 +15,9 @@ namespace ADV_08
             _animator = GetComponent<Animator>();
         }
 
-        public void SetMoving(bool isMooving)
+        public void SetMoving(bool isMoving)
         {
-            _animator.SetBool(AnimatorIsMovingName, isMooving);
+            _animator.SetBool(IsMovingName, isMoving);
         }
     }
 }
