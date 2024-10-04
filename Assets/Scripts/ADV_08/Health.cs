@@ -10,7 +10,7 @@ namespace ADV_08
 
         private void Start()
         {
-            CurrentHealth = 50;
+            CurrentHealth = _maxHealth;
         }
 
         private void OnValidate()

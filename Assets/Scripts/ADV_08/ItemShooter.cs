@@ -18,7 +18,7 @@ namespace ADV_08
             base.Activate(owner);
             Shooter shooter = GetComponent<Shooter>();
             Bullet bullet = Instantiate(_bulletPrefab, transform.position, Quaternion.identity, null);
-            shooter.Shoot(bullet);
+            shooter.Shoot(bullet, transform.parent.forward);
             Debug.Log($"Shoot activated");
         }
     }

@@ -12,13 +12,13 @@ namespace ADV_08
                 _shootPower = 0;
         }
 
-        public void Shoot(Bullet bullet)
+        public void Shoot(Bullet bullet, Vector3 Direction)
         {
             Rigidbody rigidBody = bullet.GetComponent<Rigidbody>();
 
             if (rigidBody != null)
             {
-                rigidBody.AddForce(transform.parent.forward * _shootPower);
+                rigidBody.AddForce(Direction * _shootPower);
             }
             else
             {

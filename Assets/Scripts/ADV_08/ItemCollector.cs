@@ -7,6 +7,7 @@ namespace ADV_08
     public class ItemCollector : MonoBehaviour
     {
         private Inventory _inventory;
+
         private void Awake()
         {
             _inventory = GetComponent<Inventory>();
@@ -22,6 +23,7 @@ namespace ADV_08
                 }
             }
         }
+
         private bool TryCollect(Item item)
         {
             return _inventory.TryAddItem(item);
