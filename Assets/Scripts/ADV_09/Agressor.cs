@@ -20,6 +20,10 @@ public class Agressor : IEnemyStateHandler
         _currentDirection = (targetPosition - _transform.position).normalized;
     }
 
+    public void EnterState()
+    {
+    }
+
     public void UpdateState()
     {
         ChangeDirection(_targetTransform.position);

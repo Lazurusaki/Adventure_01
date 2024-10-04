@@ -11,6 +11,10 @@ public class Suicide : IEnemyStateHandler
         _destroyEffect = destroyEffect;
     }
 
+    public void EnterState()
+    {
+    }
+
     public void UpdateState()
     {
         Object.Instantiate(_destroyEffect, _transform.position, Quaternion.identity, null);

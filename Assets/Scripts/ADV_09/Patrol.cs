@@ -22,7 +22,7 @@ public class Patrol : IEnemyStateHandler
         }
 
         _currentPatrolPointIndex = 0;
-        ChangeDirection(_patrolPoints[_currentPatrolPointIndex]);
+        EnterState();
     }
 
     private void ChangeDirection(Vector3 targetPosition)
@@ -37,6 +37,11 @@ public class Patrol : IEnemyStateHandler
         if (_currentPatrolPointIndex == _patrolPoints.Length)
             _currentPatrolPointIndex = 0;
 
+        ChangeDirection(_patrolPoints[_currentPatrolPointIndex]);
+    }
+
+    public void EnterState()
+    {
         ChangeDirection(_patrolPoints[_currentPatrolPointIndex]);
     }
 

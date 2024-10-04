@@ -13,12 +13,18 @@ public class Wanderer : IEnemyStateHandler
     {
         _transform = transform;
         _mover = mover;
-        DefineNewRandomDirection();
+        EnterState();
     }
 
     private void DefineNewRandomDirection()
     {
         _currentDirection = new Vector3(Random.Range(-1f, 1f), 0, Random.Range(-1f, 1f)).normalized;
+    }
+
+    public void EnterState()
+    {
+        DefineNewRandomDirection();
+        _timer = 0;
     }
 
     public void UpdateState()
@@ -27,9 +33,6 @@ public class Wanderer : IEnemyStateHandler
         _mover.Move(_transform, _currentDirection);
 
         if (_timer >= _directionChangeFrequency)
-        {
-            DefineNewRandomDirection();
-            _timer = 0;
-        }
+            EnterState();
     }
 }

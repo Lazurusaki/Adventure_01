@@ -8,7 +8,7 @@ public class PlayerTracker
     private Transform _playerTransform;
     private float _currentDistance;
 
-    public bool IsInAgression => _currentDistance <= AgressionDistance;
+    public bool IsInReact => _currentDistance <= AgressionDistance;
 
     public PlayerTracker(Transform transform, Transform playerTransform)
     {

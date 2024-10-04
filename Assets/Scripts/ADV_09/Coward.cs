@@ -20,6 +20,10 @@ public class Coward : IEnemyStateHandler
         _currentDirection = (_transform.position - targetPosition).normalized;
     }
 
+    public void EnterState()
+    {
+    }
+
     public void UpdateState()
     {
         ChangeDirection(_targetTransform.position);

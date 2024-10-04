@@ -10,6 +10,7 @@ namespace ADV_09
         private PlayerTracker _playerTracker;
         private Mover _mover;
         private Transform _playerTransform;
+        private EnemyStates _currentState;
 
         private bool _isInitialized;
 
@@ -58,10 +59,21 @@ namespace ADV_09
             {
                 _playerTracker.Update();
 
-                if (_playerTracker.IsInAgression)
+                if (_playerTracker.IsInReact)
+                {
                     _reactionStateBehaviorHandler.UpdateState();
+                    _currentState = EnemyStates.React;
+                }
                 else
+                {
+                    if (_currentState == EnemyStates.React)
+                    {
+                        _currentState = EnemyStates.Idle;
+                        _idleStateBehaviorHandler.EnterState();
+                    }
+
                     _idleStateBehaviorHandler.UpdateState();
+                }
             }
         }
     }
