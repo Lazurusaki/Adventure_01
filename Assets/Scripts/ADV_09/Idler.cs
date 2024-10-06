@@ -1,10 +1,10 @@
-public class Idler : IEnemyStateHandler
+public class Idler : IBehavior
 {
-    public void EnterState()
+    public void Enter()
     {
     }
 
-    public void UpdateState()
+    public void Update()
     {
     }
 }

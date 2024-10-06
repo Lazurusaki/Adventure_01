@@ -4,10 +4,10 @@ namespace ADV_09
 {
     public class EnemySpawnPoint : MonoBehaviour
     {
-        [SerializeField] private EnemyIdleStateBehaviors _idleBehavior;
-        [SerializeField] private EnemyReactionStateBehaviors _reactionBehavior;
+        [SerializeField] private IdleBehaviors _idleBehavior;
+        [SerializeField] private ReactionBehaviors _reactionBehavior;
 
-        public EnemyIdleStateBehaviors IdleBehavior => _idleBehavior;
-        public EnemyReactionStateBehaviors ReactionBehavior => _reactionBehavior;
+        public IdleBehaviors IdleBehavior => _idleBehavior;
+        public ReactionBehaviors ReactionBehavior => _reactionBehavior;
     }
 }

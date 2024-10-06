@@ -1,7 +1,8 @@
 using ADV_09;
+using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 
-public class Patrol : IEnemyStateHandler
+public class Patrol : IBehavior
 {
     private float _targetReachDeadZone = 0.1f;
     private Transform _transform;
@@ -22,7 +23,7 @@ public class Patrol : IEnemyStateHandler
         }
 
         _currentPatrolPointIndex = 0;
-        EnterState();
+        Enter();
     }
 
     private void ChangeDirection(Vector3 targetPosition)
@@ -40,16 +41,16 @@ public class Patrol : IEnemyStateHandler
         ChangeDirection(_patrolPoints[_currentPatrolPointIndex]);
     }
 
-    public void EnterState()
+    public void Enter()
     {
         ChangeDirection(_patrolPoints[_currentPatrolPointIndex]);
     }
 
-    public void UpdateState()
+    public void Update()
     {
         if (Vector3.Distance(_transform.position, _patrolPoints[_currentPatrolPointIndex]) <= _targetReachDeadZone)
             ChangePatrolPoint();
 
-        _mover.Move(_transform, _currentDirection);
+        _mover.Move(_currentDirection);
     }
 }

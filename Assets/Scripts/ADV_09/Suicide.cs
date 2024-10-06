@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Suicide : IEnemyStateHandler
+public class Suicide : IBehavior
 {
     private Transform _transform;
     private ParticleSystem _destroyEffect;
@@ -11,11 +11,11 @@ public class Suicide : IEnemyStateHandler
         _destroyEffect = destroyEffect;
     }
 
-    public void EnterState()
+    public void Enter()
     {
     }
 
-    public void UpdateState()
+    public void Update()
     {
         Object.Instantiate(_destroyEffect, _transform.position, Quaternion.identity, null);
         Object.Destroy(_transform.gameObject);

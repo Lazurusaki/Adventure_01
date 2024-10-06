@@ -1,7 +1,7 @@
 using ADV_09;
 using UnityEngine;
 
-public class Coward : IEnemyStateHandler
+public class Coward : IBehavior
 {
     private Transform _transform;
     private Transform _targetTransform;
@@ -20,13 +20,13 @@ public class Coward : IEnemyStateHandler
         _currentDirection = (_transform.position - targetPosition).normalized;
     }
 
-    public void EnterState()
+    public void Enter()
     {
     }
 
-    public void UpdateState()
+    public void Update()
     {
         ChangeDirection(_targetTransform.position);
-        _mover.Move(_transform, _currentDirection);
+        _mover.Move(_currentDirection);
     }
 }

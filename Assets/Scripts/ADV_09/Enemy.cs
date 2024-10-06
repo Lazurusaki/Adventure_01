@@ -2,59 +2,60 @@ using UnityEngine;
 
 namespace ADV_09
 {
+    [RequireComponent(typeof(Mover))]
     public class Enemy : MonoBehaviour
     {
-        private IEnemyStateHandler _idleStateBehaviorHandler;
-        private IEnemyStateHandler _reactionStateBehaviorHandler;
+        private IBehavior _idleBehavior;
+        private IBehavior _reactionBehavior;
 
+        private IBehavior _currentBehavior;
         private PlayerTracker _playerTracker;
         private Transform _playerTransform;
-        private EnemyStates _currentState;
+        private Mover _mover;
 
-        public bool IsInitialized { get; set; }
-        public Mover Mover { get; private set; }
+        private bool _isInitialized;
 
-        public void Initialize(Transform playerTransform,
-                               EnemyIdleStateBehaviors idleStateBehavior,
-                               EnemyReactionStateBehaviors reactionStateBehavior)
+        private void Awake()
         {
+            _mover = GetComponent<Mover>();
+        }
+
+        public void Initialize(Transform playerTransform, IBehavior idleBehavior, IBehavior reactionBehavior)
+        {
+            _idleBehavior = idleBehavior;
+            _reactionBehavior = reactionBehavior;
+            _currentBehavior = _idleBehavior;
             _playerTransform = playerTransform;
-            Mover = new Mover();
             _playerTracker = new PlayerTracker(transform, _playerTransform);
+            _isInitialized = true;
         }
 
         private void Update()
         {
-            if (IsInitialized)
+            if (_isInitialized)
             {
                 _playerTracker.Update();
 
-                if (_playerTracker.IsInReact)
+                if (_playerTracker.IsReact)
                 {
-                    _reactionStateBehaviorHandler.UpdateState();
-                    _currentState = EnemyStates.React;
+                    ChangeBehaviorTo(_reactionBehavior);
                 }
                 else
                 {
-                    if (_currentState == EnemyStates.React)
-                    {
-                        _currentState = EnemyStates.Idle;
-                        _idleStateBehaviorHandler.EnterState();
-                    }
-
-                    _idleStateBehaviorHandler.UpdateState();
+                    ChangeBehaviorTo(_idleBehavior);
                 }
+
+                _currentBehavior.Update();
             }
         }
 
-        public void SetIdleStateBehaviorHandler(IEnemyStateHandler idleStateBehaviorHandler)
+        private void ChangeBehaviorTo(IBehavior behavior)
         {
-            _idleStateBehaviorHandler = idleStateBehaviorHandler;
-        }
-
-        public void SetReactionStateBehaviorHandler(IEnemyStateHandler reactionStateBehaviorHandler)
-        {
-            _reactionStateBehaviorHandler = reactionStateBehaviorHandler;
+            if (_currentBehavior != behavior)
+            {
+                _currentBehavior = behavior;
+                _currentBehavior.Enter();
+            }
         }
     }
 }

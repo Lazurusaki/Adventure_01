@@ -2,10 +2,10 @@ using UnityEngine;
 
 namespace ADV_09
 {
-    public class Mover
+    public class Mover : MonoBehaviour
     {
         private const float Speed = 2f;
-        public void Move(Transform transform, Vector3 direction)
+        public void Move(Vector3 direction)
         {
             transform.Translate(direction * Speed * Time.deltaTime, Space.World);
         }

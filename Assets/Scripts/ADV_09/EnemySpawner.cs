@@ -32,36 +32,44 @@ namespace ADV_09
             {
                 if (child.TryGetComponent(out EnemySpawnPoint spawnPoint))
                 {
+                    IBehavior idleBehavior;
+                    IBehavior reactionBehavior;
+
                     Enemy enemy = Instantiate(_enemyPrefab, child.position, Quaternion.identity, null);
-                    enemy.Initialize(_playerTransform, spawnPoint.IdleBehavior, spawnPoint.ReactionBehavior);
 
                     switch (spawnPoint.IdleBehavior)
                     {
-                        case EnemyIdleStateBehaviors.Idle:
-                            enemy.SetIdleStateBehaviorHandler(new Idler());
+                        case IdleBehaviors.Idle:
+                            idleBehavior = new Idler();
                             break;
-                        case EnemyIdleStateBehaviors.Patrol:
-                            enemy.SetIdleStateBehaviorHandler(new Patrol(enemy.transform, enemy.Mover, _patrolPointsContainer));
+                        case IdleBehaviors.Patrol:
+                            idleBehavior = new Patrol(enemy.transform, enemy.GetComponent<Mover>(), _patrolPointsContainer);
                             break;
-                        case EnemyIdleStateBehaviors.Wander:
-                            enemy.SetIdleStateBehaviorHandler(new Wanderer(enemy.transform, enemy.Mover));
+                        case IdleBehaviors.Wander:
+                            idleBehavior = new Wanderer(enemy.transform, enemy.GetComponent<Mover>());
+                            break;
+                        default:
+                            idleBehavior = null;
                             break;
                     }
 
                     switch (spawnPoint.ReactionBehavior)
                     {
-                        case EnemyReactionStateBehaviors.RunAway:
-                            enemy.SetReactionStateBehaviorHandler(new Coward(enemy.transform, enemy.Mover, _playerTransform));
+                        case ReactionBehaviors.RunAway:
+                            reactionBehavior = new Coward(enemy.transform, enemy.GetComponent<Mover>(), _playerTransform);
                             break;
-                        case EnemyReactionStateBehaviors.Agress:
-                            enemy.SetReactionStateBehaviorHandler(new Agressor(enemy.transform, enemy.Mover, _playerTransform));
+                        case ReactionBehaviors.Agress:
+                            reactionBehavior = new Agressor(enemy.transform, enemy.GetComponent<Mover>(), _playerTransform);
                             break;
-                        case EnemyReactionStateBehaviors.Suicide:
-                            enemy.SetReactionStateBehaviorHandler(new Suicide(enemy.transform, _destroyEffectPrefab));
+                        case ReactionBehaviors.Suicide:
+                            reactionBehavior = new Suicide(enemy.transform, _destroyEffectPrefab);
+                            break;
+                        default:
+                            reactionBehavior = null;
                             break;
                     }
 
-                    enemy.IsInitialized = true;
+                    enemy.Initialize(_playerTransform, idleBehavior, reactionBehavior);
                 }
             }
         }
