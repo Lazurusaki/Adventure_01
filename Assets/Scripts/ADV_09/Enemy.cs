@@ -9,8 +9,8 @@ namespace ADV_09
         private IBehavior _reactionBehavior;
 
         private IBehavior _currentBehavior;
-        private PlayerTracker _playerTracker;
-        private Transform _playerTransform;
+        private TargetTracker _distanceTracker;
+        private Transform _player;
         private Mover _mover;
 
         private bool _isInitialized;
@@ -20,13 +20,12 @@ namespace ADV_09
             _mover = GetComponent<Mover>();
         }
 
-        public void Initialize(Transform playerTransform, IBehavior idleBehavior, IBehavior reactionBehavior)
+        public void Initialize(TargetTracker playerTracker, IBehavior idleBehavior, IBehavior reactionBehavior)
         {
             _idleBehavior = idleBehavior;
             _reactionBehavior = reactionBehavior;
             _currentBehavior = _idleBehavior;
-            _playerTransform = playerTransform;
-            _playerTracker = new PlayerTracker(transform, _playerTransform);
+            _distanceTracker = playerTracker;
             _isInitialized = true;
         }
 
@@ -34,9 +33,9 @@ namespace ADV_09
         {
             if (_isInitialized)
             {
-                _playerTracker.Update();
+                _distanceTracker.Update();
 
-                if (_playerTracker.IsReact)
+                if (_distanceTracker.IsReact)
                 {
                     ChangeBehaviorTo(_reactionBehavior);
                 }

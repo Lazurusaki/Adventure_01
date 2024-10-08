@@ -4,15 +4,15 @@ using UnityEngine;
 public class Coward : IBehavior
 {
     private Transform _transform;
-    private Transform _targetTransform;
+    private TargetTracker _targetTracker;
     private Mover _mover;
     private Vector3 _currentDirection;
 
-    public Coward(Transform transform, Mover mover, Transform targetTransform)
+    public Coward(Transform transform, Mover mover, TargetTracker distanceTracker)
     {
         _transform = transform;
         _mover = mover;
-        _targetTransform = targetTransform;
+        _targetTracker = distanceTracker;
     }
 
     private void ChangeDirection(Vector3 targetPosition)
@@ -26,7 +26,7 @@ public class Coward : IBehavior
 
     public void Update()
     {
-        ChangeDirection(_targetTransform.position);
+        ChangeDirection(_targetTracker.TargetTransform.position);
         _mover.Move(_currentDirection);
     }
 }

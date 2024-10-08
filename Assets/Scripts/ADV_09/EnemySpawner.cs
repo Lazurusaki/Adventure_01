@@ -36,6 +36,7 @@ namespace ADV_09
                     IBehavior reactionBehavior;
 
                     Enemy enemy = Instantiate(_enemyPrefab, child.position, Quaternion.identity, null);
+                    TargetTracker targetTracker = new TargetTracker(enemy.transform, _playerTransform);
 
                     switch (spawnPoint.IdleBehavior)
                     {
@@ -56,10 +57,10 @@ namespace ADV_09
                     switch (spawnPoint.ReactionBehavior)
                     {
                         case ReactionBehaviors.RunAway:
-                            reactionBehavior = new Coward(enemy.transform, enemy.GetComponent<Mover>(), _playerTransform);
+                            reactionBehavior = new Coward(enemy.transform, enemy.GetComponent<Mover>(), targetTracker);
                             break;
                         case ReactionBehaviors.Agress:
-                            reactionBehavior = new Agressor(enemy.transform, enemy.GetComponent<Mover>(), _playerTransform);
+                            reactionBehavior = new Agressor(enemy.transform, enemy.GetComponent<Mover>(), targetTracker);
                             break;
                         case ReactionBehaviors.Suicide:
                             reactionBehavior = new Suicide(enemy.transform, _destroyEffectPrefab);
@@ -69,7 +70,7 @@ namespace ADV_09
                             break;
                     }
 
-                    enemy.Initialize(_playerTransform, idleBehavior, reactionBehavior);
+                    enemy.Initialize(targetTracker, idleBehavior, reactionBehavior);
                 }
             }
         }
