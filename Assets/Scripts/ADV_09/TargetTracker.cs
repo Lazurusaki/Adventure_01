@@ -8,7 +8,7 @@ public class TargetTracker
     private float _currentDistance;
 
     public bool IsReact => _currentDistance <= AgressionDistance;
-    public Transform TargetTransform { get; private set;}
+    public Transform TargetTransform { get;}
 
     public TargetTracker(Transform transform, Transform targetTransform)
     {

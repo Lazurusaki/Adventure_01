@@ -20,12 +20,12 @@ namespace ADV_09
             _mover = GetComponent<Mover>();
         }
 
-        public void Initialize(TargetTracker playerTracker, IBehavior idleBehavior, IBehavior reactionBehavior)
+        public void Initialize(TargetTracker targetTracker, IBehavior idleBehavior, IBehavior reactionBehavior)
         {
             _idleBehavior = idleBehavior;
             _reactionBehavior = reactionBehavior;
             _currentBehavior = _idleBehavior;
-            _distanceTracker = playerTracker;
+            _distanceTracker = targetTracker;
             _isInitialized = true;
         }
 
