@@ -403,8 +403,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9fae3c465d39ae845b44c2386792466e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _arrow: {fileID: 388279606}
-  _wind: {fileID: 2129962213}
 --- !u!4 &1003125541
 Transform:
   m_ObjectHideFlags: 0
@@ -1167,8 +1165,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77814cab8f6809944b2c4ec009645bb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _forceMin: 10
-  _forceMax: 15
+  _forceMin: 30
+  _forceMax: 50
   _changeIntervalMin: 10
   _changeIntervalMax: 20
   _directionChangeSpeed: 1

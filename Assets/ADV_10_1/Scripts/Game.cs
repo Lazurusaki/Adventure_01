@@ -5,29 +5,28 @@ namespace ADV_10_1
     public class Game : MonoBehaviour
     {
         [SerializeField] private Handle _handle;
-        [SerializeField] private LayerMask _draggableLayer;
         [SerializeField] private LayerMask _groundLayer;
-        [SerializeField] private Bomb _bombPrefab;
+        [SerializeField] private float _explosionRadius;
+        [SerializeField] private float _explosionPower;
+        [SerializeField] private ParticleSystem _explosionPrefab;
 
         private InputDetector _inputDetector;
-        private MouseHitDetector _mouseHitDetector;
-        private BombSpawner _bombSpawner;
         private HandleController _handleController;
+        private ExplosionShooter _shooter;
 
         private void Awake()
         {
             _inputDetector = new InputDetector();
-            _mouseHitDetector = new MouseHitDetector();
 
             if (_handle == null)
                 throw new System.NullReferenceException("Handle is not set");
 
-            _handleController = new HandleController(_handle, _mouseHitDetector, _draggableLayer, _groundLayer);
+            _handleController = new HandleController(_handle, _groundLayer);
 
-            if (_bombPrefab == null)
-                throw new System.NullReferenceException("Bomb is not set");
+            if (_explosionPrefab == null)
+                throw new System.NullReferenceException("Explosion prefab is not set");
 
-            _bombSpawner = new BombSpawner(_bombPrefab);
+            _shooter = new ExplosionShooter(_explosionPrefab,_explosionPower,_explosionRadius);
         }
 
         private void Update()
@@ -39,19 +38,20 @@ namespace ADV_10_1
 
             _handleController.Update();
 
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
             if (_inputDetector.IsLMBPressed)
-                _handleController.TryPick();
+                _handleController.TryPick(ray);
 
             if (_inputDetector.IsLMBReleased)
                 _handleController.Release();
 
-            if (_bombPrefab == null)
+            if (_explosionPrefab == null)
                 return;
 
             if (_inputDetector.IsRMBPressed)
             {
-                if (_mouseHitDetector.TryHit(_groundLayer, out RaycastHit hit))
-                    _bombSpawner.Spawn(hit.point);
+                _shooter.Shoot(ray);
             }
         }
     }

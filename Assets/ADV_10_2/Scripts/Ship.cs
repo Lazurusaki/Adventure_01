@@ -30,10 +30,9 @@ public class Ship : MonoBehaviour
         _sail.localRotation = Quaternion.Euler(Vector3.up * newAngle);
     }
 
-    public void Move(Vector2 velocuty)
+    public void Move(float speed)
     {
-        Vector3 directionConverted = new Vector3(velocuty.x, 0, velocuty.y);
-        _rigidbody.AddForce(directionConverted);
+        _rigidbody.AddForce(transform.forward * speed);
     }
 
     public Vector2 GetSailDirection()
