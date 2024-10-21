@@ -37,7 +37,9 @@ namespace ADV_08
             IsMoving = false;
 
             if (_characterAnimationController != null)
+            {
                 _characterAnimationController.SetMoving(false);
+            }
         }
     }
 }
