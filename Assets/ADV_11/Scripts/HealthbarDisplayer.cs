@@ -3,35 +3,36 @@ using UnityEngine.UI;
 
 namespace ADV_11
 {
-
-    public class HealthbarDisplayer : MonoBehaviour
+    public class HealthbarDisplayer: MonoBehaviour
     {
-        [SerializeField] private Transform _socket;
-        [SerializeField] private Slider _healthBar;
-        [SerializeField] private Health _health;
+        [SerializeField] private HealthBar _healthBarPrefab;
 
-        private void Awake()
+        private Transform _socket;
+        private Health _health;
+        private HealthBar _healthBar;
+
+        private bool _isInitialized;
+
+        public void Initialize(Health health, Transform socket)
         {
-            if (_socket == null)
-                throw new System.NullReferenceException("Target object is not set");
+            if (_healthBarPrefab == null)
+                throw new System.NullReferenceException("Healthbar prefav is not set");
 
-            if (_healthBar == null)
-                throw new System.NullReferenceException("Healthbar is not set");
-
-            if (_health == null)
-                throw new System.NullReferenceException("Healt is not set");
-
-            _healthBar.maxValue = _health.MaxHealth;
+            _socket = socket;
+            _health = health;
+            _healthBar = Instantiate(_healthBarPrefab, Vector3.zero, Quaternion.identity, null);
+            _healthBar.Slider.maxValue = _health.MaxHealth;
+            _isInitialized = true;
         }
 
         private void Update()
         {
-            if (_socket == null || _healthBar == null || _health == null)
-                return;
-
-            _healthBar.value = _health.CurrentHealth;
-            _healthBar.transform.position = _socket.position;
-            _healthBar.transform.rotation = Camera.main.transform.rotation;
+            if (_isInitialized)
+            {
+                _healthBar.Slider.value = _health.CurrentHealth;
+                _healthBar.transform.position = _socket.position;
+                _healthBar.transform.rotation = Camera.main.transform.rotation;
+            }
         }
     }
 }

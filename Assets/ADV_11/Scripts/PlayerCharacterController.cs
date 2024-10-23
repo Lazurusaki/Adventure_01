@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace ADV_11
 {
-    public class PlayerController
+    public class PlayerCharacterController : IController
     {
         private CharacterController _characterController;
         private InputDetector _inputDetector;
@@ -10,9 +10,9 @@ namespace ADV_11
 
         private float maxRayDistance = 100f;
 
-        public PlayerController(CharacterController playerCharacterController, InputDetector inputDetector, LayerMask groundLayer)
+        public PlayerCharacterController(CharacterController CharacterController, InputDetector inputDetector, LayerMask groundLayer)
         {
-            _characterController = playerCharacterController;
+            _characterController = CharacterController;
             _inputDetector = inputDetector;
             _groundLayer = groundLayer;
         }

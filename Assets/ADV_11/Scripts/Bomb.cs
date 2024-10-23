@@ -14,6 +14,13 @@ namespace ADV_11
         private SphereCollider _detectCollider;
         private bool _isTimerStarted;
 
+        private void OnValidate()
+        {
+            _timer = Mathf.Max(0, _timer);
+            _damage = Mathf.Max(0, _damage);
+            _explosionRadius = Mathf.Max(0, _explosionRadius);
+        }
+
         private void Awake()
         {
             if (_bombView == null)
@@ -21,18 +28,6 @@ namespace ADV_11
 
             _detectCollider = GetComponent<SphereCollider>();
             _detectCollider.radius = _activateRadius;
-        }
-
-        private void OnValidate()
-        {
-            if (_timer < 0)
-                _timer = 0;
-
-            if (_damage < 0)
-                _damage = 0;
-
-            if (_explosionRadius < 0)
-                _explosionRadius = 0;
         }
 
         private void Update()

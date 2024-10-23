@@ -2,22 +2,22 @@ using UnityEngine;
 
 namespace ADV_11
 {
-    public class Health : MonoBehaviour, IDamagable
+    public class Health
     {
-        [SerializeField] private float _maxHealth;
+        private float _maxHealth;
 
         public float CurrentHealth { get; private set; }
-        public float MaxHealth { get { return _maxHealth; } }
+        public float MaxHealth => _maxHealth;
 
-        private void Start()
+        public Health(float MaxHealth)
         {
+            _maxHealth = MaxHealth;
             CurrentHealth = _maxHealth;
         }
 
         private void OnValidate()
         {
-            if (_maxHealth < 0)
-                _maxHealth = 0;
+            _maxHealth = Mathf.Max(0, _maxHealth);
         }
 
         public void Heal(float amount)

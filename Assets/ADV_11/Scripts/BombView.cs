@@ -11,6 +11,12 @@ namespace ADV_11
 
         private LightFlicker _lightFlicker;
 
+        private void OnValidate()
+        {
+            _flickerFrequency = Mathf.Max(0, _flickerFrequency);
+            _maxIntensity = Mathf.Max(0, _maxIntensity);
+        }
+
         private void Awake()
         {
             if (_detonateEffectPrefab == null)
@@ -28,15 +34,6 @@ namespace ADV_11
             {
                 _lightFlicker.update();
             }
-        }
-
-        private void OnValidate()
-        {
-            if (_flickerFrequency < 0)
-                _flickerFrequency = 0;
-
-            if (_maxIntensity < 0)
-                _maxIntensity = 0;
         }
 
         public void Detonate()
