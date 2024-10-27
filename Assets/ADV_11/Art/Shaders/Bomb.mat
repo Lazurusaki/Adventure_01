@@ -68,7 +68,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Edge: 0
-    - _EdgeWidth: 0.1
+    - _EdgeWidth: 0
     - _EmissionStranght: 0
     - _EmissionStrenght: 0
     - _EmmisiveStrength: 0
