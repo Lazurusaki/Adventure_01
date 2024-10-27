@@ -63,6 +63,12 @@ namespace ADV_11
                 _game.Update();
         }
 
+        private void LateUpdate()
+        {
+            if (_isInitialized)
+                _game.LateUpdate();
+        }
+
         private void ValidateReferences()
         {
             if (_playerStart == null)

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ADV_11
@@ -45,6 +46,7 @@ namespace ADV_11
         public void Update()
         {
             _inputDetector.Update();
+            _currentController.Update();
 
             if (_inputDetector.IsLMBPressed && _currentController != _playerController)
                 _currentController = _playerController;
@@ -65,14 +67,19 @@ namespace ADV_11
                 _isTimerWorking = false;
             }
 
-            _currentController.Update();
-            _healthBarDisplayer.Update();
+            
+            
 
             if (_player != null && _player.IsDeathComplete)
             {
                 Object.Destroy(_player.gameObject);
                 Object.Destroy(_healthBar.gameObject);
             }
+        }
+
+        public void LateUpdate()
+        {
+            _healthBarDisplayer.Update();
         }
     }
 }
