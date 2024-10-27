@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace ADV_11
@@ -66,9 +65,6 @@ namespace ADV_11
                 ResetTimer();
                 _isTimerWorking = false;
             }
-
-            
-            
 
             if (_player != null && _player.IsDeathComplete)
             {

@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace ADV_11
 {
-
     public class EmmisiveFlicker
     {
         private const string EmmisiveStrengthKey = "_EmmisiveStrength";
