@@ -15,9 +15,10 @@ namespace ADV_11
 
         public void Update()
         {
-            if (_characterController.IsTargetReached)
-                if (TryFindPosition(out var position))
-                    _characterController.MoveTo(position);
+            if (_characterController != null) 
+                if (_characterController.IsTargetReached)
+                    if (TryFindPosition(out var position))
+                        _characterController.MoveTo(position);
         }
 
         private bool TryFindPosition(out Vector3 position)

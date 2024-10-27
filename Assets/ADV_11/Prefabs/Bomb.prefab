@@ -40,12 +40,12 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1863514487961094376}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
   m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_Intensity: 10
+  m_Intensity: 0
   m_Range: 5
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -180,7 +180,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 14fe60a709825c64a9a33b0d1810cf34, type: 2}
+  - {fileID: 2100000, guid: 638b9fb05fcfdfb4ea786c63429ccbed, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -271,8 +271,11 @@ MonoBehaviour:
   _detonateEffectPrefab: {fileID: 6421822171713033533, guid: 2874ed76d735c5046ae657ed7ff97d3c,
     type: 3}
   _light: {fileID: 797593611824342760}
-  _flickerFrequency: 0
-  _maxIntensity: 0
+  _renderer: {fileID: 6717887734646780760}
+  _activatedColor: {r: 1, g: 0.35901612, b: 0, a: 1}
+  _activatedMaxLight: 2
+  _activatedMaxEmissive: 1
+  _activatedMaxSize: 1.5
 --- !u!1 &8551401367924218451
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,11 +323,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1198cb4c4b99e804aaaa79bfabce8e26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timer: 1
-  _bombView: {fileID: 2100747340750048195}
+  _detonateTime: 1
+  _view: {fileID: 2100747340750048195}
   _damage: 100
   _activateRadius: 3
   _explosionRadius: 4
+  _explosionSound: {fileID: 8300000, guid: 5e6ed32333bb6c24aab941ce4c6b721b, type: 3}
 --- !u!135 &3860742349355912337
 SphereCollider:
   m_ObjectHideFlags: 0

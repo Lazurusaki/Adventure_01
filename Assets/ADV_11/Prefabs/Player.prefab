@@ -174,8 +174,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 245ac504a030f52499b31215bf41385c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _characterView: {fileID: 4303841044210277970}
+  _view: {fileID: 4303841044210277970}
   _healthBarSocket: {fileID: 5807120830607015971}
+  _jumpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.01
+      value: 0.000011280179
+      inSlope: 19.090445
+      outSlope: 19.090445
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.0472182
+    - serializedVersion: 3
+      time: 0.39206892
+      value: 2.9936624
+      inSlope: 0.031641856
+      outSlope: 0.031641856
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.21224512
+      outWeight: 0.15269832
+    - serializedVersion: 3
+      time: 1
+      value: 0.009402618
+      inSlope: -10.331213
+      outSlope: -10.331213
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.05621179
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _jumpDuration: 1
 --- !u!195 &522416312171127466
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -491,7 +525,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 03ea2d256bf144dfa907b17f13aa4949, type: 2}
+  - {fileID: 2100000, guid: a2e48e8dbdc35a6409bf43e153f2579b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1187,6 +1221,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _injuredPercent: 30
+  _renderer: {fileID: 3341392076931521328}
+  _damageFlickerFrequency: 15
+  _damageFlickerDuration: 1.7
+  _damageFlickerColor: {r: 1, g: 0, b: 0, a: 1}
+  _deathFadeDuration: 1
 --- !u!1 &5897478247283524669
 GameObject:
   m_ObjectHideFlags: 0

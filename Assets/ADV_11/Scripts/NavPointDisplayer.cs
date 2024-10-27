@@ -23,7 +23,7 @@ namespace ADV_11
 
         private void Update()
         {
-            if (_isInitialized)
+            if (_isInitialized && _agent != null)
             {
                 if (_agent.hasPath)
                 {

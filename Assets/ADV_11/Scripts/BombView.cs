@@ -4,20 +4,33 @@ namespace ADV_11
 {
     public class BombView : MonoBehaviour
     {
+        private const string EmmisiveStrengthKey = "_EmmisiveStrength";
+        private const string EmmisiveColorKey = "_Color";
+
         [SerializeField] private ParticleSystem _detonateEffectPrefab;
         [SerializeField] private Light _light;
-        [SerializeField] private float _flickerFrequency;
-        [SerializeField] private float _maxIntensity;
+        [SerializeField] private Renderer _renderer;
+        [SerializeField] private Color _activatedColor;
+        [SerializeField] private float _activatedMaxLight;
+        [SerializeField] private float _activatedMaxEmissive;
+        [SerializeField] private float _activatedMaxSize;
 
-        private LightFlicker _lightFlicker;
+        private EmmisiveIncreaser _emmisiveIncreaser;
+        private LightIncreaser _lightIncreaser;
+        private SizeIncreaser _sizeIncreaser;
+
+        private float _detonateTime;
+        private float _timer;
+        private float _currentEmmisive;
 
         private void OnValidate()
         {
-            _flickerFrequency = Mathf.Max(0, _flickerFrequency);
-            _maxIntensity = Mathf.Max(0, _maxIntensity);
+            _activatedMaxLight = Mathf.Max(0, _activatedMaxLight);
+            _activatedMaxEmissive = Mathf.Max(0, _activatedMaxEmissive);
+            _activatedMaxSize = Mathf.Max(0, _activatedMaxSize);
         }
 
-        private void Awake()
+        public void Initialize(float detonateTime)
         {
             if (_detonateEffectPrefab == null)
                 throw new System.NullReferenceException("Detonate prefab is not set");
@@ -25,15 +38,15 @@ namespace ADV_11
             if (_light == null)
                 throw new System.NullReferenceException("Light is not set");
 
-            _lightFlicker = new LightFlicker(_light, _maxIntensity, _flickerFrequency);
-        }
+            if (_renderer == null)
+                throw new System.NullReferenceException("Renderer is not set");
 
-        private void Update()
-        {
-            if (_light.enabled == true)
-            {
-                _lightFlicker.update();
-            }
+            _detonateTime = detonateTime;
+            _emmisiveIncreaser = new EmmisiveIncreaser(this, _renderer, detonateTime, _activatedMaxEmissive, _activatedColor);
+            _lightIncreaser = new LightIncreaser(this, _light, detonateTime, _activatedMaxLight);
+            _sizeIncreaser = new SizeIncreaser(this, _renderer, detonateTime, _activatedMaxSize);
+            _light.color = _activatedColor;
+            _renderer.material.SetColor(EmmisiveColorKey, _activatedColor);
         }
 
         public void Detonate()
@@ -46,11 +59,9 @@ namespace ADV_11
 
         public void Activate()
         {
-            if (_light == null)
-                return;
-
-            _light.enabled = true;
-            _lightFlicker.Enable();
+            _emmisiveIncreaser.Activate();
+            _lightIncreaser.Activate();
+            _sizeIncreaser.Activate();
         }
     }
 }

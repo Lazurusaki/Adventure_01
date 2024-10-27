@@ -5,39 +5,46 @@ namespace ADV_11
     [RequireComponent(typeof(SphereCollider))]
     public class Bomb : MonoBehaviour, IDamagable
     {
-        [SerializeField] private float _timer;
-        [SerializeField] private BombView _bombView;
+        [SerializeField] private float _detonateTime;
+        [SerializeField] private BombView _view;
         [SerializeField] private float _damage;
         [SerializeField] private float _activateRadius;
         [SerializeField] private float _explosionRadius;
+        [SerializeField] private AudioClip _explosionSound;
 
+        private AudioSource _explosionSource;
         private SphereCollider _detectCollider;
         private bool _isTimerStarted;
 
         private void OnValidate()
         {
-            _timer = Mathf.Max(0, _timer);
+            _detonateTime = Mathf.Max(0, _detonateTime);
             _damage = Mathf.Max(0, _damage);
             _explosionRadius = Mathf.Max(0, _explosionRadius);
         }
 
-        private void Awake()
+        public void Initialize(AudioSource explosionSource)
         {
-            if (_bombView == null)
+            if (_view == null)
                 throw new System.NullReferenceException("Bomb view is not set");
+
+            if (_explosionSound == null)
+                throw new System.NullReferenceException("Explosion sound is not set");
 
             _detectCollider = GetComponent<SphereCollider>();
             _detectCollider.radius = _activateRadius;
+            _explosionSource = explosionSource;
+            _view.Initialize(_detonateTime);
         }
 
         private void Update()
         {
             if (_isTimerStarted)
             {
-                if (_timer <= 0)
+                if (_detonateTime <= 0)
                     Detonate();
                 else
-                    _timer -= Time.deltaTime;
+                    _detonateTime -= Time.deltaTime;
             }
         }
 
@@ -59,8 +66,8 @@ namespace ADV_11
         {
             _isTimerStarted = true;
 
-            if (_bombView != null)
-                _bombView.Activate();
+            if (_view != null)
+                _view.Activate();
         }
 
         private float CalculateDamage(Vector3 targetPosition)
@@ -79,8 +86,14 @@ namespace ADV_11
                     if (collider.TryGetComponent(out IDamagable damagable))
                         damagable.TakeDamage(CalculateDamage(collider.transform.position));
 
-            if (_bombView != null)
-                _bombView.Detonate();
+            if (_view != null)
+                _view.Detonate();
+
+            if (_explosionSound != null && _explosionSource != null)
+            {
+                _explosionSource.transform.position = transform.position;
+                _explosionSource.PlayOneShot(_explosionSound);
+            }
 
             Destroy(gameObject);
         }

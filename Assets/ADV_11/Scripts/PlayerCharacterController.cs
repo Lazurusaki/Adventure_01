@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace ADV_11
 {
@@ -19,7 +20,7 @@ namespace ADV_11
 
         public void Update()
         {
-            if (_inputDetector.IsLMBPressed)
+            if (_inputDetector.IsLMBPressed && EventSystem.current.IsPointerOverGameObject() == false)
             {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
