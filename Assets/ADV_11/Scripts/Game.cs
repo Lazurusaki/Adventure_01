@@ -70,7 +70,7 @@ namespace ADV_11
             {
                 Object.Destroy(_player.gameObject);
                 Object.Destroy(_healthBar.gameObject);
-            }
+            }            
         }
 
         public void LateUpdate()
