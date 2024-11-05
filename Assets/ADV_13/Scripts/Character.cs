@@ -47,7 +47,7 @@ namespace ADV_13
         private void OnDied()
         {
             Disable();
-            
+
             IsDead = true;
             Died?.Invoke();
         }
