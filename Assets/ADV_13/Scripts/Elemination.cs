@@ -4,7 +4,7 @@ namespace ADV_13
 {
     public class Elemination : ICondition
     {
-        private const int Kills = 3;
+        private const int Kills = 5;
 
         private readonly KillCounter _killCounter;
 
