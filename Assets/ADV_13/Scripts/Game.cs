@@ -107,6 +107,7 @@ namespace ADV_13
         {
             _pool.ClearAll();
             _enemies.Clear();
+            _killCounter.Reset();
 
             if (_playerCharacter is ShooterCharacter shooterCharacter)
                 shooterCharacter.Kill -= OnKill;
