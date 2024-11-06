@@ -7,10 +7,10 @@ namespace ADV_13
     {
         private readonly List<Transform> _transforms;
 
-        public CharacterPool(CharacterFactory characterFactory)
+        public CharacterPool(CharacterFabric characterFabric)
         {
             _transforms = new List<Transform>();
-            characterFactory.CharacterSpawned += character => _transforms.Add(character.transform);
+            characterFabric.CharacterSpawned += character => _transforms.Add(character.transform);
         }
         
         public void Clear(Transform transform)

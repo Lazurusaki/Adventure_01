@@ -30,21 +30,13 @@ namespace ADV_13
             CheckExceptions();
             
             var inputDetector = new InputDetector(this);
-            var characterFactory = new CharacterFactory(_playerCharacterPrefab, _enemyCharacterPrefab);
+            var characterFactory = new CharacterFabric(_playerCharacterPrefab, _enemyCharacterPrefab);
             var characterPool = new CharacterPool(characterFactory);
             var enemiesSpawner = new EnemiesCooldownSpawner(this, _enemySpawnPoints, characterFactory, _enemySpawnCooldown, _enemyDirectionChangeFrequency);
-
-            ICondition winCondition = GetCondition(_winCondition);
-            ICondition looseCondition = GetCondition(_looseCondition);
-
-            GameMode gameMode = new GameMode(winCondition, looseCondition);
+            GameMode gameMode = new GameMode(_winCondition, _looseCondition);
+            var game = new Game(gameMode,_camera, characterFactory, characterPool, _playerStart, inputDetector, enemiesSpawner, _resultView);
             
-            var game = new Game(winCondition, looseCondition, _camera, characterFactory, characterPool, _playerStart, inputDetector, enemiesSpawner, _resultView);
-
-            
-            
-            
-            game.Start(gameMode);
+            game.Start();
         }
         
         private void CheckExceptions()
@@ -55,29 +47,6 @@ namespace ADV_13
             if (_playerStart is null) throw new NullReferenceException("PlayerStart is null");
             if (_enemySpawnPoints is null) throw new NullReferenceException("EnemySpawnPoints is null");
             if (_resultView is null) throw new NullReferenceException("ResultView is null");
-        }
-        
-        private ICondition GetCondition(EndGameConditions conditionName)
-        {
-            ICondition condition = null;
-            
-            switch (conditionName)
-            {
-                case EndGameConditions.TimeSurvival:
-                    condition = new TimeSurvival();
-                    break;
-                case EndGameConditions.Elemination:
-                    condition = new Elemination();
-                    break;
-                case EndGameConditions.Died:
-                    condition = new Died();
-                    break;
-                case EndGameConditions.EnemyOverload:
-                    condition = new EnemyOverload();
-                    break;
-            }
-
-            return condition;
         }
     }
 }

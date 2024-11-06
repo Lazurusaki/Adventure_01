@@ -1,47 +1,83 @@
 using System;
+using Unity.VisualScripting;
 
 namespace ADV_13
 {
     public class GameMode
     {
-        //private readonly ICondition _winCondition;
-        //private readonly ICondition _looseCondition;
-        //private readonly KillCounter _killCounter;
+        private readonly ICondition _winCondition;
+        private readonly ICondition _looseCondition;
+
+        private Character _playerCharacter;
+        private KillCounter _killCounter;
+        private ObservableList<Character> _enemies;
 
         public event Action Win;
         public event Action Loose;
-
-        public GameMode(ICondition winCondition, ICondition looseCondition)
+        
+        public GameMode(EndGameConditions winConditionName, EndGameConditions looseConditionName)
         {
-            winCondition.Completed += () => Win?.Invoke();
-            looseCondition.Completed += () => Loose?.Invoke();
+            _winCondition = GetCondition(winConditionName);
+            _looseCondition = GetCondition(looseConditionName);
+
+            _winCondition.Completed += () => Win?.Invoke();
+            _looseCondition.Completed  += () => Loose?.Invoke();
+        }
+
+        public void Initialize(Character playerCharacter, KillCounter killCounter, ObservableList<Character> enemies)
+        {
+            _playerCharacter = playerCharacter;
+            _killCounter = killCounter;
+            _enemies = enemies;
+            
+            InitializeCondition(_winCondition);
+            InitializeCondition(_looseCondition);
         }
         
-        // public GameMode(Character character, ObservableList<Character> enemies, KillCounter killCounter,
-        // WinConditions winConditionName, LooseConditions looseConditionName)
-        // {
-        //     switch (winConditionName)
-        //     {
-        //         case WinConditions.TimeSurvival:
-        //             _winCondition = new TimeSurvival(character);
-        //             break;
-        //         case WinConditions.Elimination:
-        //             _winCondition = new Elemination(killCounter);
-        //             break;
-        //     }
-        //
-        //     switch (looseConditionName)
-        //     {
-        //         case LooseConditions.Died:
-        //             _looseCondition = new Died(character);
-        //             break;
-        //         case LooseConditions.EnemyOverload:
-        //             _looseCondition = new EnemyOverload(enemies);
-        //             break;
-        //     }
-        //
-        //     _winCondition.Completed += OnWin;
-        //     _looseCondition.Completed += OnLoose;
-        // }
+        private ICondition GetCondition(EndGameConditions conditionName)
+        {
+            ICondition condition = null;
+            
+            switch (conditionName)
+            {
+                case EndGameConditions.TimeSurvival:
+                    condition = new TimeSurvival();
+                    break;
+                case EndGameConditions.Elemination:
+                    condition = new Elemination();
+                    break;
+                case EndGameConditions.Died:
+                    condition = new Died();
+                    break;
+                case EndGameConditions.EnemyOverload:
+                    condition = new EnemyOverload();
+                    break;
+            }
+
+            return condition;
+        }
+        
+        private void InitializeCondition(ICondition condition)
+        {
+            if (_playerCharacter is null) throw new NullReferenceException("PlayerCharacter is empty");
+            if (_killCounter is null) throw new NullReferenceException("KillCounter is empty");
+            if (_enemies is null) throw new NullReferenceException("Enemies is empty");
+            
+            switch (condition)
+            {
+                case TimeSurvival timeSurvival:
+                    timeSurvival.Initialize(_playerCharacter);
+                    break;
+                case Elemination elemination:
+                    elemination.Initialize(_killCounter);
+                    break;
+                case Died died:
+                    died.Initialize(_playerCharacter);
+                    break;
+                case EnemyOverload enemyOverload:
+                    enemyOverload.Initialize(_enemies);
+                    break;
+            }
+        }
     }
 }

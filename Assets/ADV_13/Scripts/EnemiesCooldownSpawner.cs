@@ -11,7 +11,7 @@ namespace ADV_13
     {
         private readonly MonoBehaviour _coroutineHost;
         private readonly List<Vector3> _positions;
-        private readonly CharacterFactory _characterFactory;
+        private readonly CharacterFabric _characterFabric;
         private readonly float _cooldown;
         private readonly float _enemyDirectionChangeFrequency;
 
@@ -21,7 +21,7 @@ namespace ADV_13
 
         public event Action<Character> EnemySpawned;
 
-        public EnemiesCooldownSpawner(MonoBehaviour coroutineHost, Transform spawnPointsContainer, CharacterFactory characterFactory,
+        public EnemiesCooldownSpawner(MonoBehaviour coroutineHost, Transform spawnPointsContainer, CharacterFabric characterFabric,
             float spawnCooldown, float enemyDirectionChangeFrequency)
         {
             _coroutineHost = coroutineHost;
@@ -29,7 +29,7 @@ namespace ADV_13
                 .Select(point => point.position)
                 .ToList();
 
-            _characterFactory = characterFactory;
+            _characterFabric = characterFabric;
             _cooldown = spawnCooldown;
             _enemyDirectionChangeFrequency = enemyDirectionChangeFrequency;
         }
@@ -55,7 +55,7 @@ namespace ADV_13
             while (_isEnabled)
             {
                 var randomIndex = Random.Range(0, _positions.Count);
-                var character = _characterFactory.SpawnCharacter(CharacterTypes.Enemy, _positions[randomIndex]);
+                var character = _characterFabric.SpawnCharacter(CharacterTypes.Enemy, _positions[randomIndex]);
                 var aiController = new AIWandererController(character, _enemyDirectionChangeFrequency);
                 aiController.Activate();
                 EnemySpawned?.Invoke(character);

@@ -4,14 +4,14 @@ using Object = UnityEngine.Object;
 
 namespace ADV_13
 {
-    public class CharacterFactory
+    public class CharacterFabric
     {
         private readonly Character _playerPrefab;
         private readonly Character _enemyPrefab;
 
         public event Action<Character> CharacterSpawned;
 
-        public CharacterFactory(Character playerPrefab, Character enemyPrefab)
+        public CharacterFabric(Character playerPrefab, Character enemyPrefab)
         {
             _playerPrefab = playerPrefab;
             _enemyPrefab = enemyPrefab;

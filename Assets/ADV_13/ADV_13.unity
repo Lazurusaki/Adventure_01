@@ -1046,7 +1046,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _winCondition: 1
-  _looseCondition: 1
+  _looseCondition: 2
   _camera: {fileID: 137346431}
   _playerCharacterPrefab: {fileID: -3241613604406869836, guid: 7e7207c1cf8af004083242b863ee9e13,
     type: 3}
@@ -1054,9 +1054,9 @@ MonoBehaviour:
     type: 3}
   _playerStart: {fileID: 1461700148}
   _enemySpawnPoints: {fileID: 1330181598}
+  _resultView: {fileID: 1284906547}
   _enemySpawnCooldown: 2
   _enemyDirectionChangeFrequency: 1
-  _resultView: {fileID: 1284906547}
 --- !u!4 &1075641399
 Transform:
   m_ObjectHideFlags: 0
