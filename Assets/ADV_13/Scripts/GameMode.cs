@@ -26,6 +26,10 @@ namespace ADV_13
 
         public void Initialize(Character playerCharacter, KillCounter killCounter, ObservableList<Character> enemies)
         {
+            if (_playerCharacter is null) throw new NullReferenceException("PlayerCharacter is empty");
+            if (_killCounter is null) throw new NullReferenceException("KillCounter is empty");
+            if (_enemies is null) throw new NullReferenceException("Enemies is empty");
+            
             _playerCharacter = playerCharacter;
             _killCounter = killCounter;
             _enemies = enemies;
@@ -59,10 +63,6 @@ namespace ADV_13
         
         private void InitializeCondition(ICondition condition)
         {
-            if (_playerCharacter is null) throw new NullReferenceException("PlayerCharacter is empty");
-            if (_killCounter is null) throw new NullReferenceException("KillCounter is empty");
-            if (_enemies is null) throw new NullReferenceException("Enemies is empty");
-            
             switch (condition)
             {
                 case TimeSurvival timeSurvival:
