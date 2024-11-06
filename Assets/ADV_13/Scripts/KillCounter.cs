@@ -5,8 +5,7 @@ namespace ADV_13
     public class KillCounter
     {
         private int _kills;
-        private Character _character;
-
+        
         public event Action<int> Changed;
 
         public void AddKill()

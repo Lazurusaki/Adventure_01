@@ -3,21 +3,16 @@ using UnityEngine;
 
 namespace ADV_13
 {
-    public class Pool
+    public class CharacterPool
     {
         private readonly List<Transform> _transforms;
 
-        public Pool(Factory factory)
+        public CharacterPool(CharacterFactory characterFactory)
         {
             _transforms = new List<Transform>();
-            factory.CharacterSpawned += OnCharacterSpawned;
+            characterFactory.CharacterSpawned += character => _transforms.Add(character.transform);
         }
-
-        private void OnCharacterSpawned(Character character)
-        {
-            _transforms.Add(character.transform);
-        }
-
+        
         public void Clear(Transform transform)
         {
             if (_transforms.Contains(transform))

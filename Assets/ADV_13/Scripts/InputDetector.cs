@@ -17,9 +17,9 @@ namespace ADV_13
         public event Action<Vector2> AxisChanged;
         public event Action ShootPressed;
         
-        public InputDetector(MonoBehaviour owner)
+        public InputDetector(MonoBehaviour coroutineHost)
         {
-            owner.StartCoroutine(Update());
+            coroutineHost.StartCoroutine(Update());
         }
 
         private IEnumerator Update()

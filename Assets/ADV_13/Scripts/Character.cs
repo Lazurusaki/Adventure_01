@@ -36,11 +36,14 @@ namespace ADV_13
                 throw new NullReferenceException("View is not set");
 
             _rigidbody = GetComponent<Rigidbody>();
+            
             _mover = new Mover(_rigidbody);
             _rotator = new LookRotator(_rigidbody, _rotationSpeed);
             _health = new Health(_maxHealth);
-            _health.Empty += OnDied;
+ 
             _view.Initialize(this);
+            
+            _health.Empty += OnDied;
             _view.DeathCompleted += OnDeathCompleted;
         }
 

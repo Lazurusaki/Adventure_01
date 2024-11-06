@@ -1,3 +1,4 @@
+using System;
 using Cinemachine;
 using UnityEngine;
 
@@ -6,64 +7,78 @@ namespace ADV_13
     public class Game
     {
         private readonly CinemachineVirtualCamera _camera;
-        private readonly Factory _factory;
-        private readonly Pool _pool;
+        private readonly CharacterFactory _characterFactory;
+        private readonly CharacterPool _characterPool;
         private readonly Transform _playerStart;
         private readonly EnemiesCooldownSpawner _enemiesSpawner;
         private readonly PlayerController _playerController;
         private readonly ResultView _resultView;
-        private readonly WinConditions _winCondition;
-        private readonly LooseConditions _looseCondition;
+        private readonly ICondition _winCondition;
+        private readonly ICondition _looseCondition;
         private readonly ObservableList<Character> _enemies;
         private readonly KillCounter _killCounter;
 
         private GameMode _gameMode;
         private Character _playerCharacter;
 
-        public Game(WinConditions winCondition,
-            LooseConditions looseCondition,
+        public event Action PlayerDied;
+        public event Action Kill;
+        public event Action EnemiesChanged;
+        public event Action GameOver;
+
+        public Game(ICondition winCondition, ICondition looseCondition,
             CinemachineVirtualCamera camera,
-            Factory factory,
-            Pool pool,
+            CharacterFactory characterFactory,
+            CharacterPool characterPool,
             Transform playerStart,
             InputDetector inputDetector,
             EnemiesCooldownSpawner enemiesSpawner,
             ResultView resultView)
         {
-            _winCondition = winCondition;
-            _looseCondition = looseCondition;
             _camera = camera;
-            _factory = factory;
+            _characterFactory = characterFactory;
             _enemies = new ObservableList<Character>();
             _killCounter = new KillCounter();
-            _pool = pool;
+            _characterPool = characterPool;
             _playerStart = playerStart;
             _enemiesSpawner = enemiesSpawner;
-            _enemiesSpawner.EnemySpawned += OnEnemySpawned;
             _playerController = new PlayerController(inputDetector);
             _resultView = resultView;
-            _resultView.Completed += OnShowResultCompleted;
+            _winCondition = winCondition;
+            _looseCondition = looseCondition;
+            
+            _enemiesSpawner.EnemySpawned += OnEnemySpawned;
+            _resultView.Completed += OnGameOver;
         }
 
         public void Start()
         {
-            _playerCharacter = _factory.SpawnCharacter(CharacterTypes.Player, _playerStart.position);
-            if (_playerCharacter is ShooterCharacter shooterCharacter)
-                shooterCharacter.Kill += OnKill;
-
+            _playerCharacter = _characterFactory.SpawnCharacter(CharacterTypes.Player, _playerStart.position);
             _playerController.SetCharacter(_playerCharacter);
+            
+            
+
+            // ConditionFabric conditionFabric = new ConditionFabric(_playerCharacter, _killCounter, _enemies);
+            // conditionFabric.InitializeCondition(_winCondition);
+            // conditionFabric.InitializeCondition(_looseCondition);
+            // _winCondition.Completed += OnWin;
+            // _looseCondition.Completed += OnLoose;
+            
             _camera.Follow = _playerCharacter.transform;
-
-            _gameMode = new GameMode(_playerCharacter, _enemies, _killCounter, _winCondition, _looseCondition);
-            _gameMode.Win += OnWin;
-            _gameMode.Loose += OnLoose;
-
             _playerController.Enable();
             _enemiesSpawner.Start();
+            
+            if (_playerCharacter is ShooterCharacter shooterCharacter)
+                shooterCharacter.Kill += OnKill;
         }
 
         private void Stop()
         {
+            if (_playerCharacter is ShooterCharacter shooterCharacter)
+                shooterCharacter.Kill -= OnKill;
+            
+            _winCondition.Completed -= OnWin;
+            _looseCondition.Completed -= OnLoose;
             _enemiesSpawner.Stop();
             _playerController.Disable();
         }
@@ -94,27 +109,19 @@ namespace ADV_13
         private void OnCharacterDeath(Character character)
         {
             character.DeathCompleted -= OnCharacterDeath;
-            _pool.Clear(character.transform);
+            _characterPool.Clear(character.transform);
             _enemies.Remove(character);
-        }
 
-        private void OnShowResultCompleted()
-        {
-            Restart();
+            if (character == _playerCharacter)
+                PlayerDied?.Invoke();
         }
-
-        private void Restart()
+        
+        private void OnGameOver()
         {
-            _pool.ClearAll();
+            _characterPool.ClearAll();
             _enemies.Clear();
             _killCounter.Reset();
-
-            if (_playerCharacter is ShooterCharacter shooterCharacter)
-                shooterCharacter.Kill -= OnKill;
-
-            _gameMode.Win -= OnWin;
-            _gameMode.Loose -= OnLoose;
-            Start();
+            GameOver?.Invoke();
         }
     }
 }

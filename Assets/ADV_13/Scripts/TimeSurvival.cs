@@ -7,22 +7,19 @@ namespace ADV_13
     public class TimeSurvival : ICondition
     {
         private const float Time = 5f;
-
-        private readonly MonoBehaviour _owner;
         
         private float _timer;
 
         public event Action Completed;
-
-        public TimeSurvival(MonoBehaviour owner)
+        
+        public void Initialize(MonoBehaviour coroutineHost)
         {
-            _owner = owner;
-            _owner.StartCoroutine(Timer());
+            coroutineHost.StartCoroutine(Timer());
         }
 
         private IEnumerator Timer()
         {
-            WaitForSeconds wait = new WaitForSeconds(1);
+            var wait = new WaitForSeconds(1);
 
             while (_timer < Time)
             {

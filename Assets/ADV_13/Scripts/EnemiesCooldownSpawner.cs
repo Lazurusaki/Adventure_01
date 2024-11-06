@@ -9,9 +9,9 @@ namespace ADV_13
 {
     public class EnemiesCooldownSpawner
     {
-        private readonly MonoBehaviour _owner;
+        private readonly MonoBehaviour _coroutineHost;
         private readonly List<Vector3> _positions;
-        private readonly Factory _factory;
+        private readonly CharacterFactory _characterFactory;
         private readonly float _cooldown;
         private readonly float _enemyDirectionChangeFrequency;
 
@@ -21,15 +21,15 @@ namespace ADV_13
 
         public event Action<Character> EnemySpawned;
 
-        public EnemiesCooldownSpawner(MonoBehaviour owner, Transform spawnPointsContainer, Factory factory,
+        public EnemiesCooldownSpawner(MonoBehaviour coroutineHost, Transform spawnPointsContainer, CharacterFactory characterFactory,
             float spawnCooldown, float enemyDirectionChangeFrequency)
         {
-            _owner = owner;
+            _coroutineHost = coroutineHost;
             _positions = spawnPointsContainer.Cast<Transform>()
                 .Select(point => point.position)
                 .ToList();
 
-            _factory = factory;
+            _characterFactory = characterFactory;
             _cooldown = spawnCooldown;
             _enemyDirectionChangeFrequency = enemyDirectionChangeFrequency;
         }
@@ -37,10 +37,10 @@ namespace ADV_13
         public void Start()
         {
             if (_spawnCoroutine is not null)
-                _owner.StopCoroutine(_spawnCoroutine);
+                _coroutineHost.StopCoroutine(_spawnCoroutine);
 
             _isEnabled = true;
-            _spawnCoroutine = _owner.StartCoroutine(CooldownSpawn());
+            _spawnCoroutine = _coroutineHost.StartCoroutine(CooldownSpawn());
         }
 
         public void Stop()
@@ -55,7 +55,7 @@ namespace ADV_13
             while (_isEnabled)
             {
                 var randomIndex = Random.Range(0, _positions.Count);
-                var character = _factory.SpawnCharacter(CharacterTypes.Enemy, _positions[randomIndex]);
+                var character = _characterFactory.SpawnCharacter(CharacterTypes.Enemy, _positions[randomIndex]);
                 var aiController = new AIWandererController(character, _enemyDirectionChangeFrequency);
                 aiController.Activate();
                 EnemySpawned?.Invoke(character);
