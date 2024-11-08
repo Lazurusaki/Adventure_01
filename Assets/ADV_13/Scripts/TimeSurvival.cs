@@ -7,24 +7,18 @@ namespace ADV_13
     public class TimeSurvival : ICondition
     {
         private const float Time = 5f;
-
-        private Coroutine _timerCoroutine;
+        private readonly MonoBehaviour _coroutineHost;
+        
         private float _timer;
+        private Coroutine _timerCoroutine;
 
         public event Action Completed;
         
-        
-        
-        public void Initialize(MonoBehaviour coroutineHost)
+        public TimeSurvival(MonoBehaviour coroutineHost)
         {
-            if (_timerCoroutine is not null)
-                coroutineHost.StopCoroutine(_timerCoroutine);
-            
-            _timer = 0;
-            
-            _timerCoroutine = coroutineHost.StartCoroutine(Timer());
+            _coroutineHost = coroutineHost;
         }
-
+        
         private IEnumerator Timer()
         {
             var wait = new WaitForSeconds(1);
@@ -36,6 +30,25 @@ namespace ADV_13
             }
 
             Completed?.Invoke();
+        }
+        
+        public void Start()
+        {
+            if (_coroutineHost is null)
+                throw new NullReferenceException("Cant start timer, CoroutineHost is null");
+            
+            if (_timerCoroutine is not null)
+                _coroutineHost.StopCoroutine(_timerCoroutine);
+            
+            _timerCoroutine = _coroutineHost.StartCoroutine(Timer());
+        }
+
+        public void Reset()
+        {
+            if (_timerCoroutine is not null)
+                _coroutineHost.StopCoroutine(_timerCoroutine);
+
+            _timer = 0;
         }
     }
 }

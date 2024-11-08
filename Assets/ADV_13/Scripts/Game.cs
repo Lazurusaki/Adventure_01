@@ -1,4 +1,3 @@
-using System;
 using Cinemachine;
 using UnityEngine;
 
@@ -6,7 +5,8 @@ namespace ADV_13
 {
     public class Game
     {
-        private readonly GameMode _gameMode;
+        private readonly ICondition _winCondition;
+        private readonly ICondition _looseCondition;
         private readonly CinemachineVirtualCamera _camera;
         private readonly CharacterFabric _characterFabric;
         private readonly CharacterPool _characterPool;
@@ -14,30 +14,35 @@ namespace ADV_13
         private readonly EnemiesCooldownSpawner _enemiesSpawner;
         private readonly PlayerController _playerController;
         private readonly ResultView _resultView;
+        private readonly CharacterHolder _characterHolder;
         private readonly ObservableList<Character> _enemies;
         private readonly KillCounter _killCounter;
 
-        private Character _playerCharacter;
-
-        public Game(GameMode gameMode,
+        public Game(ICondition winCondition,
+            ICondition looseCondition,
             CinemachineVirtualCamera camera,
             CharacterFabric characterFabric,
             CharacterPool characterPool,
             Transform playerStart,
             InputDetector inputDetector,
             EnemiesCooldownSpawner enemiesSpawner,
+            CharacterHolder characterHolder,
+            KillCounter killCounter,
+            ObservableList<Character> enemies,
             ResultView resultView)
         {
-            _gameMode = gameMode;
+            _winCondition = winCondition;
+            _looseCondition = looseCondition;
             _camera = camera;
             _characterFabric = characterFabric;
-            _enemies = new ObservableList<Character>();
-            _killCounter = new KillCounter();
             _characterPool = characterPool;
             _playerStart = playerStart;
             _enemiesSpawner = enemiesSpawner;
             _playerController = new PlayerController(inputDetector);
             _resultView = resultView;
+            _characterHolder = characterHolder;
+            _killCounter = killCounter;
+            _enemies = enemies;
 
             _enemiesSpawner.EnemySpawned += OnEnemySpawned;
             _resultView.Completed += OnGameOver;
@@ -45,18 +50,21 @@ namespace ADV_13
 
         public void Start()
         {
-            _playerCharacter = _characterFabric.SpawnCharacter(CharacterTypes.Player, _playerStart.position);
-            _gameMode.Initialize(_playerCharacter, _killCounter, _enemies);
-            _playerController.SetCharacter(_playerCharacter);
-            _camera.Follow = _playerCharacter.transform;
+            Character playerCharacter = _characterFabric.SpawnCharacter(CharacterTypes.Player, _playerStart.position);
+            _playerController.SetCharacter(playerCharacter);
+            _characterHolder.SetCharacter(playerCharacter);
+            _camera.Follow = playerCharacter.transform;
             _playerController.Enable();
-            _enemiesSpawner.Start();
 
-            if (_playerCharacter is ShooterCharacter shooterCharacter)
+            if (playerCharacter is ShooterCharacter shooterCharacter)
                 shooterCharacter.Kill += OnKill;
 
-            _gameMode.Win += OnWin;
-            _gameMode.Loose += OnLoose;
+            _winCondition.Completed += OnWin;
+            _looseCondition.Completed += OnLoose;
+            _winCondition.Start();
+            _looseCondition.Start();
+
+            _enemiesSpawner.Start();
         }
 
         private void Stop()
@@ -64,11 +72,14 @@ namespace ADV_13
             _enemiesSpawner.Stop();
             _playerController.Disable();
 
-            if (_playerCharacter is ShooterCharacter shooterCharacter)
+            if (_characterHolder.GetCharacter() is ShooterCharacter shooterCharacter)
                 shooterCharacter.Kill -= OnKill;
 
-            _gameMode.Win -= OnWin;
-            _gameMode.Loose -= OnLoose;
+            _winCondition.Completed -= OnWin;
+            _looseCondition.Completed -= OnLoose;
+            _winCondition.Reset();
+            _looseCondition.Reset();
+            _characterHolder.ClearCharacter();
         }
 
         private void OnWin()

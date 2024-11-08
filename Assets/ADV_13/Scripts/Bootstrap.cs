@@ -33,8 +33,28 @@ namespace ADV_13
             var characterFactory = new CharacterFabric(_playerCharacterPrefab, _enemyCharacterPrefab);
             var characterPool = new CharacterPool(characterFactory);
             var enemiesSpawner = new EnemiesCooldownSpawner(this, _enemySpawnPoints, characterFactory, _enemySpawnCooldown, _enemyDirectionChangeFrequency);
-            GameMode gameMode = new GameMode(_winCondition, _looseCondition);
-            var game = new Game(gameMode,_camera, characterFactory, characterPool, _playerStart, inputDetector, enemiesSpawner, _resultView);
+            
+            var killCounter = new KillCounter();
+            var characterHolder = new CharacterHolder();
+            var enemies = new ObservableList<Character>();
+            var conditionFabric = new ConditionFabric(this, characterHolder, enemies, killCounter);
+            var winCondition = conditionFabric.CreateCondition(_winCondition);
+            var looseCondition = conditionFabric.CreateCondition(_looseCondition);
+            
+            var game = new Game(
+                winCondition,
+                looseCondition,
+                _camera,
+                characterFactory,
+                characterPool,
+                _playerStart,
+                inputDetector,
+                enemiesSpawner,
+                characterHolder,
+                killCounter,
+                enemies,
+                _resultView
+            );     
             
             game.Start();
         }
