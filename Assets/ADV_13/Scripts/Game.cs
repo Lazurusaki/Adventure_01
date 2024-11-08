@@ -14,7 +14,7 @@ namespace ADV_13
         private readonly EnemiesCooldownSpawner _enemiesSpawner;
         private readonly PlayerController _playerController;
         private readonly ResultView _resultView;
-        private readonly CharacterHolder _characterHolder;
+        private readonly CharacterHolder _playerCharacterHolder;
         private readonly ObservableList<Character> _enemies;
         private readonly KillCounter _killCounter;
 
@@ -26,7 +26,7 @@ namespace ADV_13
             Transform playerStart,
             InputDetector inputDetector,
             EnemiesCooldownSpawner enemiesSpawner,
-            CharacterHolder characterHolder,
+            CharacterHolder playerCharacterHolder,
             KillCounter killCounter,
             ObservableList<Character> enemies,
             ResultView resultView)
@@ -40,7 +40,7 @@ namespace ADV_13
             _enemiesSpawner = enemiesSpawner;
             _playerController = new PlayerController(inputDetector);
             _resultView = resultView;
-            _characterHolder = characterHolder;
+            _playerCharacterHolder = playerCharacterHolder;
             _killCounter = killCounter;
             _enemies = enemies;
 
@@ -52,7 +52,7 @@ namespace ADV_13
         {
             Character playerCharacter = _characterFabric.SpawnCharacter(CharacterTypes.Player, _playerStart.position);
             _playerController.SetCharacter(playerCharacter);
-            _characterHolder.SetCharacter(playerCharacter);
+            _playerCharacterHolder.SetCharacter(playerCharacter);
             _camera.Follow = playerCharacter.transform;
             _playerController.Enable();
 
@@ -72,14 +72,14 @@ namespace ADV_13
             _enemiesSpawner.Stop();
             _playerController.Disable();
 
-            if (_characterHolder.GetCharacter() is ShooterCharacter shooterCharacter)
+            if (_playerCharacterHolder.GetCharacter() is ShooterCharacter shooterCharacter)
                 shooterCharacter.Kill -= OnKill;
 
             _winCondition.Completed -= OnWin;
             _looseCondition.Completed -= OnLoose;
             _winCondition.Reset();
             _looseCondition.Reset();
-            _characterHolder.ClearCharacter();
+            _playerCharacterHolder.ClearCharacter();
         }
 
         private void OnWin()
