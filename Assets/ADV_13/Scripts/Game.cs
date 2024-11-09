@@ -7,42 +7,36 @@ namespace ADV_13
     {
         private readonly ICondition _winCondition;
         private readonly ICondition _looseCondition;
-        private readonly CinemachineVirtualCamera _camera;
         private readonly CharacterFabric _characterFabric;
         private readonly CharacterPool _characterPool;
         private readonly Transform _playerStart;
         private readonly EnemiesCooldownSpawner _enemiesSpawner;
-        private readonly PlayerController _playerController;
         private readonly ResultView _resultView;
         private readonly CharacterHolder _playerCharacterHolder;
-        private readonly ObservableList<Character> _enemies;
+        private readonly ObservableList<Character> _enemiesHolder;
         private readonly KillCounter _killCounter;
 
         public Game(ICondition winCondition,
             ICondition looseCondition,
-            CinemachineVirtualCamera camera,
             CharacterFabric characterFabric,
             CharacterPool characterPool,
             Transform playerStart,
-            InputDetector inputDetector,
             EnemiesCooldownSpawner enemiesSpawner,
             CharacterHolder playerCharacterHolder,
             KillCounter killCounter,
-            ObservableList<Character> enemies,
+            ObservableList<Character> enemiesHolder,
             ResultView resultView)
         {
             _winCondition = winCondition;
             _looseCondition = looseCondition;
-            _camera = camera;
             _characterFabric = characterFabric;
             _characterPool = characterPool;
             _playerStart = playerStart;
             _enemiesSpawner = enemiesSpawner;
-            _playerController = new PlayerController(inputDetector);
             _resultView = resultView;
             _playerCharacterHolder = playerCharacterHolder;
             _killCounter = killCounter;
-            _enemies = enemies;
+            _enemiesHolder = enemiesHolder;
 
             _enemiesSpawner.EnemySpawned += OnEnemySpawned;
             _resultView.Completed += OnGameOver;
@@ -51,10 +45,7 @@ namespace ADV_13
         public void Start()
         {
             Character playerCharacter = _characterFabric.SpawnCharacter(CharacterTypes.Player, _playerStart.position);
-            _playerController.SetCharacter(playerCharacter);
             _playerCharacterHolder.SetCharacter(playerCharacter);
-            _camera.Follow = playerCharacter.transform;
-            _playerController.Enable();
 
             if (playerCharacter is ShooterCharacter shooterCharacter)
                 shooterCharacter.Kill += OnKill;
@@ -70,7 +61,7 @@ namespace ADV_13
         private void Stop()
         {
             _enemiesSpawner.Stop();
-            _playerController.Disable();
+            _playerCharacterHolder.ClearCharacter();
 
             if (_playerCharacterHolder.GetCharacter() is ShooterCharacter shooterCharacter)
                 shooterCharacter.Kill -= OnKill;
@@ -78,8 +69,7 @@ namespace ADV_13
             _winCondition.Completed -= OnWin;
             _looseCondition.Completed -= OnLoose;
             _winCondition.Reset();
-            _looseCondition.Reset();
-            _playerCharacterHolder.ClearCharacter();
+            _looseCondition.Reset(); 
         }
 
         private void OnWin()
@@ -102,20 +92,20 @@ namespace ADV_13
         private void OnEnemySpawned(Character character)
         {
             character.DeathCompleted += OnCharacterDeath;
-            _enemies.Add(character);
+            _enemiesHolder.Add(character);
         }
 
         private void OnCharacterDeath(Character character)
         {
             character.DeathCompleted -= OnCharacterDeath;
             _characterPool.Clear(character.transform);
-            _enemies.Remove(character);
+            _enemiesHolder.Remove(character);
         }
 
         private void OnGameOver()
         {
             _characterPool.ClearAll();
-            _enemies.Clear();
+            _enemiesHolder.Clear();
             _killCounter.Reset();
             Start();
         }

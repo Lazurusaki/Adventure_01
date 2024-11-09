@@ -36,19 +36,24 @@ namespace ADV_13
             
             var killCounter = new KillCounter();
             var characterHolder = new CharacterHolder();
+            var playerController = new PlayerController(inputDetector);
             var enemies = new ObservableList<Character>();
             var conditionFabric = new ConditionFabric(this, characterHolder, enemies, killCounter);
             var winCondition = conditionFabric.CreateCondition(_winCondition);
             var looseCondition = conditionFabric.CreateCondition(_looseCondition);
+            var followCamera = new FollowCamera(_camera);
+            
+            characterHolder.CharacterSet += character => followCamera.SetFollow(character);
+            characterHolder.CharacterClear += () => followCamera.ClearFollow();
+            characterHolder.CharacterSet += character => playerController.SetCharacter(character);
+            characterHolder.CharacterClear += () => playerController.ClearCharacter();
             
             var game = new Game(
                 winCondition,
                 looseCondition,
-                _camera,
                 characterFactory,
                 characterPool,
                 _playerStart,
-                inputDetector,
                 enemiesSpawner,
                 characterHolder,
                 killCounter,

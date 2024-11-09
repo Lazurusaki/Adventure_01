@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace ADV_13
@@ -21,9 +22,6 @@ namespace ADV_13
 
         private void OnAxisInputChanged(Vector2 axis)
         {
-            if (_character is null)
-                throw new System.NullReferenceException("Character is null");
-
             if (_isEnabled == false)
                 return;
 
@@ -38,26 +36,35 @@ namespace ADV_13
 
         private void OnShoot()
         {
-            if (_character is null)
-                throw new System.NullReferenceException("Character is null");
-
-            if (_isEnabled && _character is ShooterCharacter shooter)
-                shooter.Shoot();
+            if (_isEnabled && _character is not null)
+                if (_character is ShooterCharacter shooter)
+                    shooter.Shoot();
         }
-        
+
         public void SetCharacter(Character character)
         {
             _character = character;
             _character.Died += OnDied;
+            Enable();
         }
 
-        public void Enable()
+        public void ClearCharacter()
+        {
+            if (_character is not null)
+            {
+                _character.Died += OnDied;
+                _character = null;
+                Disable();
+            }
+        }
+
+        private void Enable()
         {
             if (_isEnabled == false)
                 _isEnabled = true;
         }
 
-        public void Disable()
+        private void Disable()
         {
             if (_isEnabled)
             {
