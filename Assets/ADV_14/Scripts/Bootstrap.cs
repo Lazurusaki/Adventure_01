@@ -7,7 +7,7 @@ namespace ADV_14
     public class Bootstrap : MonoBehaviour
     {
         [SerializeField] private WalletView _walletView;
-        [SerializeField] private TimerViewButtons _timerViewButtons;
+        [FormerlySerializedAs("_timerViewButtons")] [SerializeField] private TimerButtonsView _timerButtonsView;
         [SerializeField] private TimerSliderView _timerSliderView;
 
         [FormerlySerializedAs("_imagesSpawner")] [FormerlySerializedAs("_timerImagesView")] [SerializeField]
@@ -50,7 +50,7 @@ namespace ADV_14
                 throw new NullReferenceException("Timer slider viewer is not set");
 
             var timer = new Timer(this, _timer);
-            _timerViewButtons.Initialize(timer);
+            _timerButtonsView.Initialize(timer);
 
             _timerSliderView.SetMaxValue(_timer);
             timer.Started += _timerSliderView.Show;

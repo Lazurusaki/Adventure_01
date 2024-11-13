@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace ADV_14
 {
-    public class TimerViewButtons : MonoBehaviour
+    public class TimerButtonsView : MonoBehaviour
     {
         [SerializeField] private Button _start;
         [SerializeField] private Button _stop;
