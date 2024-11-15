@@ -8,28 +8,28 @@ namespace ADV_14
     {
         private readonly MonoBehaviour _coroutineHost;
         private readonly WaitForSeconds _waitInterval;
-        private readonly float _duration;
-
+        
         private Coroutine _timerCoroutine;
+        private bool _isPaused;
+        
+        public float Duration { get; }
 
         public event Action Started;
         public event Action Stopped;
         public event Action<float> Tick;
-
-        private bool _isPaused;
-
+        
         public Timer(MonoBehaviour coroutineHost, float duration)
         {
             ValidateDuration(duration);
 
             _coroutineHost = coroutineHost;
-            _duration = duration;
+            Duration = duration;
             _waitInterval = new WaitForSeconds(Time.fixedDeltaTime);
         }
 
         private IEnumerator TimerCoroutine()
         {
-            var time = _duration;
+            var time = Duration;
             _isPaused = false;
 
             Started?.Invoke();

@@ -1,61 +1,101 @@
+using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TimerImagasView : MonoBehaviour
+namespace ADV_14
 {
-    [SerializeField] private RectTransform _origin;
-    [SerializeField] private Image _imagePrefab;
-    [SerializeField, Range(1, 10)] private int _maxColumns;
-    [SerializeField, Range(0, 20)] private float _spacing;
-
-    private List<Image> _images;
-    private int _lastImageIndex;
-
-    public void Initialize(int count)
+    public class TimerImagasView : MonoBehaviour
     {
-        _images = new List<Image>();
+        [SerializeField] private RectTransform _origin;
+        [SerializeField] private Image _imagePrefab;
+        [SerializeField, Range(1, 10)] private int _maxColumns;
+        [SerializeField, Range(0, 20)] private float _spacing;
 
-        var imageSize = _imagePrefab.GetComponent<RectTransform>().rect.width;
-        Vector3 position = _origin.position;
+        private Timer _timer;
+        private List<Image> _images;
+        private int _lastImageIndex;
+        private bool _isInitialized;
 
-        for (int i = 0; i < count; i++)
+        public void Initialize(Timer timer)
         {
-            if (i % _maxColumns == 0)
-                position = new Vector3(_origin.position.x, position.y - imageSize - _spacing, position.z);
+            if (timer.Duration < 0)
+                throw new ArgumentOutOfRangeException("Max value can't be negative");
 
-            var image = Instantiate(_imagePrefab, position, quaternion.identity, _origin);
-            _images.Add(image);
+            _timer = timer;
 
-            position = new Vector3(position.x + imageSize + _spacing, position.y, position.z);
-        }
+            _images = new List<Image>();
 
-        _lastImageIndex = _images.Count - 1;
+            var imageSize = _imagePrefab.GetComponent<RectTransform>().rect.width;
+            Vector3 position = _origin.position;
 
-        Hide();
-    }
+            for (int i = 0; i < (int)timer.Duration; i++)
+            {
+                if (i % _maxColumns == 0)
+                    position = new Vector3(_origin.position.x, position.y - imageSize - _spacing, position.z);
 
-    public void Show()
-    {
-        foreach (var image in _images)
-        {
-            image.gameObject.SetActive(true);
+                var image = Instantiate(_imagePrefab, position, quaternion.identity, _origin);
+                _images.Add(image);
+
+                position = new Vector3(position.x + imageSize + _spacing, position.y, position.z);
+            }
+
             _lastImageIndex = _images.Count - 1;
-        }
-    }
 
-    public void Hide()
-    {
-        foreach (var image in _images)
+            _timer.Tick += Update;
+            _timer.Stopped += Hide;
+            _timer.Started += Show;
+
+            _isInitialized = true;
+
+            Hide();
+        }
+
+        public void Deinitialize()
         {
-            image.gameObject.SetActive(false);
-        }
-    }
+            CheckInitialized();
 
-    public void Update(float value)
-    {
-        if (value < _lastImageIndex)
-            _images[_lastImageIndex--].gameObject.SetActive(false);
+            _timer.Tick -= Update;
+            _timer.Stopped -= Hide;
+            _timer.Started -= Show;
+
+            _isInitialized = false;
+
+            Hide();
+        }
+
+        private void CheckInitialized()
+        {
+            if (_isInitialized == false)
+                throw new InvalidOperationException("View is not initialized yet");
+        }
+
+        private void Update(float value)
+        {
+            if (value < _lastImageIndex)
+                _images[_lastImageIndex--].gameObject.SetActive(false);
+        }
+
+        public void Show()
+        {
+            CheckInitialized();
+
+            foreach (var image in _images)
+            {
+                image.gameObject.SetActive(true);
+                _lastImageIndex = _images.Count - 1;
+            }
+        }
+
+        public void Hide()
+        {
+            CheckInitialized();
+
+            foreach (var image in _images)
+            {
+                image.gameObject.SetActive(false);
+            }
+        }
     }
 }

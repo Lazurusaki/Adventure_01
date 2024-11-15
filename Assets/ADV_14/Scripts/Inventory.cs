@@ -6,16 +6,23 @@ namespace ADV_14
 {
     public class Inventory
     {
-        private readonly List<Item> _items;
-
-        public IEnumerable<Item> Items => _items;
-
-        public int CurrentSize => _items.Count;
+        private readonly List<Slot> _slots;
+        
+        public int ItemCount => _slots.Count(slot => slot.IsEmpty == false);
         public int MaxSize { get; }
 
-        public bool IsHaveSpace()
+        public bool IsHaveEmptySlot => _slots.Any(slot => slot.IsEmpty);
+
+        public Inventory(in int maxSize)
         {
-            return CurrentSize < MaxSize;
+            if (maxSize < 0)
+                throw new ArgumentOutOfRangeException("MaxSize can't be negative");
+
+            _slots = new List<Slot>();
+            MaxSize = maxSize;
+            
+            for (var i=0; i< MaxSize; i++)
+                _slots.Add(new Slot());
         }
 
         public Inventory(List<Item> items, in int maxSize)
@@ -23,40 +30,71 @@ namespace ADV_14
             if (maxSize < items.Count)
                 throw new ArgumentOutOfRangeException("MaxSize can't be less than items count");
 
-            _items = new List<Item>(items);
+            _slots  = new List<Slot>();
             MaxSize = maxSize;
+            
+            for (var i=0; i< MaxSize; i++)
+                _slots .Add(new Slot(items[i]));
         }
 
         public void Add(Item item)
         {
-            if (IsHaveSpace() == false)
+            if (IsHaveEmptySlot == false)
                 throw new InventoryFullException("Inventory is full");
 
-            _items.Add(item);
+            _slots.First(slot => slot.IsEmpty).AddItem(item);
         }
-
-        public bool IsHaveEnoughItems(int id, in int count, out List<Item> items)
-        {
-            items = _items.Where(item => item.Id == id).Take(count).ToList();
-
-            if (items.Count < count)
-                return false;
-
-            foreach (var item in items)
-                _items.Remove(item);
-
-            return true;
-        }
+        
 
         public List<Item> GetItemsById(int id, int count)
         {
-            if (IsHaveEnoughItems(id, count, out var items) == false)
-                throw new InvalidOperationException("No enough items");
+            var items = _slots.Where(slot => slot.Item.Id == id).Take(count).Select(slot => slot.Item).ToList();
+            
+            if (items.Count < count)
+                throw new InvalidOperationException("Not enough items");
 
             return items;
         }
-    }
 
+        public void Clear()
+        {
+            _slots.Where(slot => slot.IsEmpty == false).ToList().ForEach(slot => slot.RemoveItem());
+        }
+    }
+    
+    public class Slot
+    {
+        public Item Item { get; private set; }
+        
+        public bool IsEmpty => Item is not null;
+        
+        public Slot()
+        {
+            Item = null;
+        }
+
+        public Slot(Item item)
+        {
+            Item = item;
+        }
+
+        public void AddItem(Item item)
+        {
+            if (IsEmpty == false)
+                throw new InvalidOperationException("Slot is not empty");
+            
+            Item = item;
+        }
+        
+        public void RemoveItem()
+        {
+            if (IsEmpty)
+                throw new InvalidOperationException("Slot is already empty");
+            
+            Item = null;
+        }
+    }
+    
     public class Item
     {
         public readonly int Id;

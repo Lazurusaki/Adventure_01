@@ -17,7 +17,7 @@ namespace ADV_14
 
         private bool _isInitialized;
 
-        public void Initialize()
+        public void Initialize(Wallet wallet)
         {
             CheckSerializefields();
             
@@ -27,6 +27,13 @@ namespace ADV_14
                 { Currencies.Gem, _gemBalance},
                 { Currencies.Energy, _energyBalance}
             };
+            
+            wallet.CurrencyBalances[Currencies.Coin].Changed +=
+                (amount) => SetBalance(Currencies.Coin, amount);
+            wallet.CurrencyBalances[Currencies.Gem].Changed +=
+                (amount) => SetBalance(Currencies.Gem, amount);
+            wallet.CurrencyBalances[Currencies.Energy].Changed +=
+                (amount) => SetBalance(Currencies.Energy, amount);
 
             _isInitialized = true;
         }
